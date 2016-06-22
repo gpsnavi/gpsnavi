@@ -1,0 +1,10 @@
+(1)Please download the data from the following URL.
+    http://agl.wismobi.com  - navi_data.tar.gz
+
+(2) Extract TAR file in any place
+
+(3) run
+LD_LIBRARY_PATH=/usr/local/lib:/usr/lib; export LD_LIBRARY_PATH
+NAVI_DATA_DIR=./navi_data/japan_TR9; export NAVI_DATA_DIR
+navi
+
