@@ -685,7 +685,7 @@ static E_SC_RESULT makeRouteSearchSetting(pthread_msq_msg_t* aMsg, SCRP_SEARCHSE
 		for (num = 0; num < point.pointNum; num++) {
 			lat = (DOUBLE) point.point[num].coord.latitude / 1024;
 			lon = (DOUBLE) point.point[num].coord.longitude / 1024;
-			SC_Lib_ChangeTitude2PID(lat, lon, 1, &aSetting->rpPoint[num].parcelId, &x, &y);
+			MESHC_ChgLatLonToParcelID(lat, lon, 1, &aSetting->rpPoint[num].parcelId, &x, &y);
 			aSetting->rpPoint[num].x = (UINT16) x;
 			aSetting->rpPoint[num].y = (UINT16) y;
 		}

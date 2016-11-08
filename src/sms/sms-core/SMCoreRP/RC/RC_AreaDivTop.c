@@ -3152,7 +3152,6 @@ static E_SC_RESULT checkAreaDownload(T_DHC_DOWNLOAD_AREA* downloadarea_ptr, T_DH
 	if (tbl_no < 0) {
 		return (e_SC_RESULT_FAIL);
 	}
-
 	//	ダウンロードされているかチェックする。
 	INT32 k;
 	for (k = 0; k < 8; k++) {

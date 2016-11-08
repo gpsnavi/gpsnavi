@@ -37,6 +37,8 @@ int  sample_calc_demo_route(void);
 void sample_clear_demo_route_icon(void);
 void sample_init_demo_route_icon(void);
 void sample_set_demo_icon_pin_flag(SMGEOCOORD	*geoCood);
+void sample_set_demo_icon_guide_flag(SMGEOCOORD	*geoCood);
+void sample_reset_demo_icon_guide_flag(void);
 
 // button.c
 void sample_hmi_request_mapDraw(void);
@@ -52,6 +54,7 @@ int  sample_hmi_button_up(int pointer_sx,int pointer_sy);
 void sample_createGuideThread(void);
 void sample_guide_request_start(void);
 void sample_guide_request_end(void);
+int sample_get_guide_info(SMREALTIMEGUIDEDATA	*guide_info);
 
 #ifdef __cplusplus
 }

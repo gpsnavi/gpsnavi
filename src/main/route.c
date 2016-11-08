@@ -23,45 +23,76 @@
 
 #define ICON_CNT_MAX			(10)
 
-SMMAPDYNUDI	demo_icon_info[ICON_CNT_MAX];	// ユーザ定義ダイナミックアイコンデータ情報
+#define START_FLAG_NUM	(0)
+#define GOAL_FLAG_NUM	(1)
+#define PIN_FLAG_NUM	(2)
+#define GUIDE_FLAG_NUM	(3)
+
+SMMAPDYNUDI	demo_icon_info[ICON_CNT_MAX]={};	// ユーザ定義ダイナミックアイコンデータ情報
 INT32		demo_icon_num=0;				// ユーザ定義ダイナミックアイコンデータ情報数
-Bool		demo_disp_info[ICON_CNT_MAX];	// ユーザ定義ダイナミックアイコンデータの表示/非表示
+Bool		demo_disp_info[ICON_CNT_MAX]={};	// ユーザ定義ダイナミックアイコンデータの表示/非表示
 
 void sample_init_demo_route_icon(void)
 {
-	demo_icon_info[0].IconID = 21;	// start flag
-	demo_icon_info[0].Longititude	= (INT32)(0*1024.0*3600.0);
-	demo_icon_info[0].Latitude		= (INT32)(0*1024.0*3600.0);
-	demo_icon_info[1].IconID = 22;	// goal flag
-	demo_icon_info[1].Longititude	= (INT32)(0*1024.0*3600.0);
-	demo_icon_info[1].Latitude		= (INT32)(0*1024.0*3600.0);
-	demo_icon_info[2].IconID = 3;	// pin flag
-	demo_icon_info[2].Longititude	= (INT32)(0*1024.0*3600.0);
-	demo_icon_info[2].Latitude		= (INT32)(0*1024.0*3600.0);
-	demo_disp_info[0] = 0;
-	demo_disp_info[1] = 0;
-	demo_disp_info[2] = 0;
+	demo_icon_info[START_FLAG_NUM].IconID = 21;	// start flag
+	demo_icon_info[START_FLAG_NUM].Longititude	= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[START_FLAG_NUM].Latitude		= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[GOAL_FLAG_NUM ].IconID = 22;	// goal flag
+	demo_icon_info[GOAL_FLAG_NUM ].Longititude	= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[GOAL_FLAG_NUM ].Latitude		= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[PIN_FLAG_NUM  ].IconID = 3;	// pin flag
+	demo_icon_info[PIN_FLAG_NUM  ].Longititude	= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[PIN_FLAG_NUM  ].Latitude		= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[GUIDE_FLAG_NUM].IconID = 27;	// guide flag
+	demo_icon_info[GUIDE_FLAG_NUM].Longititude	= (INT32)(0*1024.0*3600.0);
+	demo_icon_info[GUIDE_FLAG_NUM].Latitude		= (INT32)(0*1024.0*3600.0);
+
+
+	demo_disp_info[START_FLAG_NUM] = 0;	// start flag
+	demo_disp_info[GOAL_FLAG_NUM ] = 0;	// goal flag
+	demo_disp_info[PIN_FLAG_NUM  ] = 0;	// pin flag
+	demo_disp_info[GUIDE_FLAG_NUM] = 0;	// guide flag
+
+	demo_icon_num = 4;
 }
 void sample_set_demo_icon_pin_flag(SMGEOCOORD	*geoCood)
 {
-	demo_icon_info[2].IconID = 3;	// pin flag
-	demo_icon_info[2].Longititude	= (INT32)(geoCood->longitude);
-	demo_icon_info[2].Latitude		= (INT32)(geoCood->latitude);
-	demo_disp_info[2] = 1;
+	demo_icon_info[PIN_FLAG_NUM].IconID = 3;	// pin flag
+	demo_icon_info[PIN_FLAG_NUM].Longititude	= (INT32)(geoCood->longitude);
+	demo_icon_info[PIN_FLAG_NUM].Latitude		= (INT32)(geoCood->latitude);
+	demo_disp_info[PIN_FLAG_NUM] = 1;
 
-	NC_DM_SetIconInfo(demo_icon_info,3);
-	NC_DM_SetDynamicUDIDisplay(demo_disp_info,3);
+	NC_DM_SetIconInfo(demo_icon_info,demo_icon_num);
+	NC_DM_SetDynamicUDIDisplay(demo_disp_info,demo_icon_num);
 	sample_hmi_set_pin_mode(1);
 }
 
 void sample_clear_demo_route_icon(void)
 {
-	demo_disp_info[0] = 0;
-	demo_disp_info[1] = 0;
-	demo_disp_info[2] = 0;
+	demo_disp_info[START_FLAG_NUM] = 0;
+	demo_disp_info[GOAL_FLAG_NUM ] = 0;
+	demo_disp_info[PIN_FLAG_NUM  ] = 0;
+	demo_disp_info[GUIDE_FLAG_NUM] = 0;
 
-	//NC_DM_SetIconInfo(demo_icon_info,3);
-	NC_DM_SetDynamicUDIDisplay(demo_disp_info,3);
+	//NC_DM_SetIconInfo(demo_icon_info,demo_icon_num);
+	NC_DM_SetDynamicUDIDisplay(demo_disp_info,demo_icon_num);
+}
+
+void sample_set_demo_icon_guide_flag(SMGEOCOORD	*geoCood)
+{
+	demo_icon_info[GUIDE_FLAG_NUM].IconID = 27;	// guide flag
+	demo_icon_info[GUIDE_FLAG_NUM].Longititude	= (INT32)(geoCood->longitude);
+	demo_icon_info[GUIDE_FLAG_NUM].Latitude		= (INT32)(geoCood->latitude);
+	demo_disp_info[GUIDE_FLAG_NUM] = 1;
+
+	NC_DM_SetIconInfo(demo_icon_info,demo_icon_num);
+	NC_DM_SetDynamicUDIDisplay(demo_disp_info,demo_icon_num);
+}
+
+void sample_reset_demo_icon_guide_flag(void)
+{
+	demo_disp_info[GUIDE_FLAG_NUM] = 0;
+	NC_DM_SetDynamicUDIDisplay(demo_disp_info,demo_icon_num);
 }
 
 int sample_calc_demo_route(void)
@@ -75,7 +106,7 @@ int sample_calc_demo_route(void)
 	float ed_lat;
 	float ed_lon;
 
-	if(demo_disp_info[2] == 0) return(1);
+	if(demo_disp_info[PIN_FLAG_NUM] == 0) return(1);
 
 	ret = NC_DM_GetCarState(&carState, e_SC_CARLOCATION_NOW);
 	if(NC_SUCCESS != ret) {
@@ -85,12 +116,8 @@ int sample_calc_demo_route(void)
 	st_lon = (float)carState.coord.longitude/1024.0/3600.0;
 	st_lat = (float)carState.coord.latitude/1024.0/3600.0;
 
-	ed_lon = (float)demo_icon_info[2].Longititude/1024.0/3600.0;
-	ed_lat = (float)demo_icon_info[2].Latitude/1024.0/3600.0;
-
-	demo_icon_info[2].Longititude	= 0;
-	demo_icon_info[2].Latitude		= 0;
-	demo_disp_info[2] = 0;
+	ed_lon = (float)demo_icon_info[PIN_FLAG_NUM].Longititude/1024.0/3600.0;
+	ed_lat = (float)demo_icon_info[PIN_FLAG_NUM].Latitude/1024.0/3600.0;
 
 	SMRPPOINT newPoint[2] = {};
 
@@ -109,24 +136,29 @@ int sample_calc_demo_route(void)
 	NC_RP_PlanSingleRoute(&newPoint[0],2);
 
 	// icon
-	demo_icon_info[0].IconID = 21;	// start flag
-	demo_icon_info[0].Longititude	= (INT32)(st_lon*1024.0*3600.0);
-	demo_icon_info[0].Latitude		= (INT32)(st_lat*1024.0*3600.0);
+	demo_icon_info[START_FLAG_NUM].IconID = 21;	// start flag
+	demo_icon_info[START_FLAG_NUM].Longititude	= (INT32)(st_lon*1024.0*3600.0);
+	demo_icon_info[START_FLAG_NUM].Latitude		= (INT32)(st_lat*1024.0*3600.0);
 
-	demo_icon_info[1].IconID = 22;	// goal flag
-	demo_icon_info[1].Longititude	= (INT32)(ed_lon*1024.0*3600.0);
-	demo_icon_info[1].Latitude		= (INT32)(ed_lat*1024.0*3600.0);
+	demo_icon_info[GOAL_FLAG_NUM ].IconID = 22;	// goal flag
+	demo_icon_info[GOAL_FLAG_NUM ].Longititude	= (INT32)(ed_lon*1024.0*3600.0);
+	demo_icon_info[GOAL_FLAG_NUM ].Latitude		= (INT32)(ed_lat*1024.0*3600.0);
 
-	demo_icon_info[2].IconID = 27;	// goal flag
-	demo_icon_info[2].Longititude	= 0;
-	demo_icon_info[2].Latitude		= 0;
+	demo_icon_info[PIN_FLAG_NUM  ].IconID = 3;	// pin flag
+	demo_icon_info[PIN_FLAG_NUM  ].Longititude	= 0;
+	demo_icon_info[PIN_FLAG_NUM  ].Latitude		= 0;
 
-	demo_disp_info[0] = 1;
-	demo_disp_info[1] = 1;
-	demo_disp_info[2] = 0;
+	demo_icon_info[GUIDE_FLAG_NUM].IconID = 27;	// guide flag
+	demo_icon_info[GUIDE_FLAG_NUM].Longititude	= 0;
+	demo_icon_info[GUIDE_FLAG_NUM].Latitude		= 0;
 
-	NC_DM_SetIconInfo(demo_icon_info,3);
-	NC_DM_SetDynamicUDIDisplay(demo_disp_info,3);
+	demo_disp_info[START_FLAG_NUM] = 1;
+	demo_disp_info[GOAL_FLAG_NUM ] = 1;
+	demo_disp_info[PIN_FLAG_NUM  ] = 0;
+	demo_disp_info[GUIDE_FLAG_NUM] = 0;
+
+	NC_DM_SetIconInfo(demo_icon_info,demo_icon_num);
+	NC_DM_SetDynamicUDIDisplay(demo_disp_info,demo_icon_num);
 
 	sample_hmi_set_pin_mode(0);
 

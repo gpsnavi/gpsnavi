@@ -29,7 +29,10 @@
 
 static pthread_msq_id_t guide_queue = PTHREAD_MSQ_ID_INITIALIZER;
 static pthread_t guide_threadId;
-SMREALTIMEGUIDEDATA guide_info;
+static SMREALTIMEGUIDEDATA guide_info;
+static int current_guide_info_status = 0;
+static SMREALTIMEGUIDEDATA current_guide_info;
+static pthread_mutex_t pthread_current_guide_info_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 #define GUIDE_ON_TIMER			(1)
 #define GUIDE_ON_GUIDE_START	(2)
@@ -38,10 +41,24 @@ SMREALTIMEGUIDEDATA guide_info;
 #define GUIDE_TIMER_ID			(1)
 #define GUIDE_REPEAT_TIME		(300)
 
+int sample_get_guide_info(SMREALTIMEGUIDEDATA	*guide_info)
+{
+	int rc = 0;
+	pthread_mutex_lock(&pthread_current_guide_info_mutex);
+	if(current_guide_info_status != 0){
+		memcpy(guide_info,&current_guide_info,sizeof(SMREALTIMEGUIDEDATA));
+		rc = 1;
+	}
+	pthread_mutex_unlock(&pthread_current_guide_info_mutex);
+	return(rc);
+}
+
 static void *guideThread(void *no_arg)
 {
 	int	rc = 0;
 	pthread_msq_msg_t	rmsg = {};
+
+	pthread_mutex_init(&pthread_current_guide_info_mutex,NULL);
 
 	pthreadCreateTimer(guide_threadId,&guide_queue,GUIDE_ON_TIMER,2000,GUIDE_TIMER_ID,PTHREAD_TIMER_REPEAT,GUIDE_REPEAT_TIME);
 
@@ -95,7 +112,55 @@ static void *guideThread(void *no_arg)
 		//		NC_Guide_RunGuide();		//	経路誘導を実行する
 				NC_Guide_GetRealTimeInfo(&guide_info);	//	リアルタイムの案内情報を取得する
 
-				printf("guide.turnDir %d\n",guide_info.turnDir);
+				if((guide_info.turnDir > 0)&&(guide_info.turnDir < 22)){
+					sample_set_demo_icon_guide_flag(&guide_info.coord);	// 交差点座標
+				}else{
+					sample_reset_demo_icon_guide_flag();	// 交差点座標
+				}
+				if((guide_info.turnDir > 0)&&(guide_info.turnDir < 25)){
+					pthread_mutex_lock(&pthread_current_guide_info_mutex);
+					memcpy(&current_guide_info,&guide_info,sizeof(SMREALTIMEGUIDEDATA));
+					current_guide_info_status = 1;	// 誘導情報を有効にする
+					pthread_mutex_unlock(&pthread_current_guide_info_mutex);
+				}else{
+					current_guide_info_status = 0;	// 誘導情報を無効にする
+				}
+/* ------------------------------------------------------------------------------------------------- */
+{
+	char *guideText[]={
+	/*[ 0]*/ "",
+	/*[ 1]*/ "Uターン",
+	/*[ 2]*/ "おおきく右方向です",
+	/*[ 3]*/ "右方向です",
+	/*[ 4]*/ "ななめ右方向です",
+	/*[ 5]*/ "直進",
+	/*[ 6]*/ "ななめ左方向です",
+	/*[ 7]*/ "左方向です",
+	/*[ 8]*/ "おおきく左方向です",
+	/*[ 9]*/ "",
+	/*[10]*/ "分岐の右方面へ",
+	/*[11]*/ "分岐の左方面へ",
+	/*[12]*/ "Roundabout出口0",
+	/*[13]*/ "Roundabout出口1",
+	/*[14]*/ "Roundabout出口2",
+	/*[15]*/ "Roundabout出口3",
+	/*[16]*/ "Roundabout出口4",
+	/*[17]*/ "Roundabout出口5",
+	/*[18]*/ "Roundabout出口6",
+	/*[19]*/ "Roundabout出口7",
+	/*[20]*/ "Roundabout出口8",
+	/*[21]*/ "合流ポイント",
+	/*[22]*/ "経由地",
+	/*[23]*/ "目的地",
+	/*[24]*/ "料金所",
+	/*[25]*/ ""
+	};
+	printf("guide.turnDir %d , remainDistToNextTurn %ld m\n",guide_info.turnDir,guide_info.remainDistToNextTurn);
+	if((guide_info.turnDir > 0)&&(guide_info.turnDir < 25)){
+		printf("%s\n",guideText[guide_info.turnDir]);
+	}
+}
+/* ------------------------------------------------------------------------------------------------- */
 #if 0
 			// set value
 			env->SetIntField(rtGUIDEDATA, fId_SMREALTIMEGUIDEDATA_iTurnDir, (jint) guide.turnDir);
@@ -116,6 +181,7 @@ static void *guideThread(void *no_arg)
 			sample_hmi_request_mapDraw();
 			break;
 		case GUIDE_ON_GUIDE_START:
+			current_guide_info_status = 0;	// 誘導情報を無効にする
 #if 1		/* 誘導が開始しない・・・なぜかわからないけど、おまじない。 */
 			NC_Simulation_StartSimulation();	//	シミュレーションを開始する
 			NC_Guide_StartGuide();				//	経路誘導を開始する
@@ -128,6 +194,7 @@ static void *guideThread(void *no_arg)
 			pthreadStartTimer(guide_threadId,GUIDE_TIMER_ID);
 			break;
 		case GUIDE_ON_GUIDE_END:
+			current_guide_info_status = 0;	// 誘導情報を無効にする
 			NC_Guide_StopGuide();				//	経路誘導を終了する
 			NC_Simulation_ExitSimulation();		//	シミュレーションを終了する
 			pthreadStopTimer(guide_threadId,GUIDE_TIMER_ID);

@@ -278,6 +278,12 @@ void sample_hmi_update(GLVContext glv_ctx)
 	int new_car;
 
 	/* ------------------------------------------ */
+	// 誘導情報表示の為、暫定処置
+    	if(NC_DM_IsExistRoute() == 1){
+    		/* 経路がある */
+		hmi_fource_update_flag = 1;
+	}
+	/* ------------------------------------------ */
 	new_car = NC_MP_GetMapMoveWithCar(NC_MP_MAP_MAIN);
 	if(hmi_move_with_car != new_car){
 		updateFlag = 1;
@@ -431,6 +437,81 @@ void sample_hmi_update(GLVContext glv_ctx)
 
     		MP_GL_EndBlend();
     		MP_GL_PopMatrix();
+
+		/* ----------------------------------------------------------------- */
+		{
+			static SMREALTIMEGUIDEDATA guide_info;
+			int rc;
+			rc = sample_get_guide_info(&guide_info);
+			if(rc == 1){
+				INT32 iconID;
+				static INT32 iconID_table[]={
+					/*[ 0]			*/-1,
+					/*[ 1]Uターン		*/ 7,
+					/*[ 2]おおきく右方向です	*/ 6,
+					/*[ 3]右方向です		*/ 5,
+					/*[ 4]ななめ右方向です	*/ 4,
+					/*[ 5]直進		*/ 3,
+					/*[ 6]ななめ左方向です	*/10,
+					/*[ 7]左方向です		*/ 9,
+					/*[ 8]おおきく左方向です	*/ 8,
+					/*[ 9]			*/-1,
+					/*[10]分岐の右方面へ	*/ 4,
+					/*[11]分岐の左方面へ	*/10,
+					/*[12]Roundabout出口0	*/12,
+					/*[13]Roundabout出口1	*/13,
+					/*[14]Roundabout出口2	*/14,
+					/*[15]Roundabout出口3	*/15,
+					/*[16]Roundabout出口4	*/16,
+					/*[17]Roundabout出口5	*/17,
+					/*[18]Roundabout出口6	*/18,
+					/*[19]Roundabout出口7	*/19,
+					/*[20]Roundabout出口8	*/20,
+					/*[21]合流ポイント	*/11,
+					/*[22]経由地		*/ 1,
+					/*[23]目的地		*/ 1,
+					/*[24]料金所		*/-1,
+					/*[25]			*/
+				};
+				iconID = -1;
+				if((guide_info.turnDir > 0) && (guide_info.turnDir < 25)){
+					iconID = iconID_table[guide_info.turnDir];
+				}
+				if(iconID != -1){
+			    		/* 誘導情報を表示する */
+			    		MP_GL_PushMatrix();
+			    		MP_GL_BeginBlend();
+			    		glColor4f(0.0, 0.0, 0.0, 0.6);
+			    		{
+						DEMO_BUTTON_t	*button;
+						float x,y,w,h,offset,scale,bar;
+
+						button = &demo_button[DEMO_BUTTON_COMPASS];
+						scale	= button->scale;
+						offset	= button->offset;
+						w		= button->w;
+						h		= button->h;
+						x		= button->x1 + button->w + 30;
+						y		= button->y1;
+
+						hmiMP_GL_DrawSquares(x,y,w,h);
+						hmiMP_ICON_Draw(x + (w/2) - offset,y + (h/2) - offset,0.0f,scale,iconID);
+
+						glColor4f(0.0, 1.0, 0.0, 1.0);
+						hmiMP_GL_DrawSquares(x+w,y,20,h);
+						if(guide_info.remainDistToNextTurn < 300){
+							glColor4f(1.0, 0.0, 0.0, 1.0);
+							bar = guide_info.remainDistToNextTurn / 300.0;
+							hmiMP_GL_DrawSquares(x+w+2,y+2,20-4,(h-4)*(1.0 - bar));
+						}
+			    		}
+
+			    		MP_GL_EndBlend();
+			    		MP_GL_PopMatrix();
+				}
+			}
+		}
+		/* ----------------------------------------------------------------- */
     	}else{
     		/* 開始ボタンを表示する */
     		MP_GL_PushMatrix();

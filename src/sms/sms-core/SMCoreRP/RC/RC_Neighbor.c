@@ -494,7 +494,7 @@ E_SC_RESULT RC_NeighborCarPoint(SCRP_SEARCHSETTING* aSetting, SCRP_NEIGHBORINFO*
 	// 中心座標取得（自車位置から）
 	lat = (DOUBLE) aSetting->car.coord.latitude / 1024;
 	lon = (DOUBLE) aSetting->car.coord.longitude / 1024;
-	SC_Lib_ChangeTitude2PID(lat, lon, RP_LEVEL1, &point.parcelId, &x, &y);
+	MESHC_ChgLatLonToParcelID(lat, lon, RP_LEVEL1, &point.parcelId, &x, &y);
 	point.x = (UINT16) x;
 	point.y = (UINT16) y;
 

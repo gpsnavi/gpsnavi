@@ -634,7 +634,7 @@ static E_SC_RESULT RT_TBL_SetParam()
 	// 緯度経度→座標変換
 	lat = (DOUBLE) carState.coord.latitude / 1024;
 	lon = (DOUBLE) carState.coord.longitude / 1024;
-	SC_Lib_ChangeTitude2PID(lat, lon, 1, &parcel_id, &x, &y);
+	MESHC_ChgLatLonToParcelID(lat, lon, 1, &parcel_id, &x, &y);
 
 	reqtbl.data_vol = 1;
 	reqtbl.data[0].parcel_id = parcel_id;

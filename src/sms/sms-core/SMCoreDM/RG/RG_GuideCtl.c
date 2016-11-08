@@ -59,7 +59,7 @@ E_SC_RESULT RG_CTL_GuideMain()
 		// 緯度経度→座標変換
 		lat = (DOUBLE) carState.coord.latitude / 1024;
 		lon = (DOUBLE) carState.coord.longitude / 1024;
-		SC_Lib_ChangeTitude2PID(lat, lon, 1, &parcel_id, &x, &y);
+		MESHC_ChgLatLonToParcelID(lat, lon, 1, &parcel_id, &x, &y);
 
 		// 誘導制御テーブル取得
 		guidectl_p = RG_CTL_GetCtlTbl();
