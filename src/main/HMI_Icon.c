@@ -75,13 +75,13 @@ UINT32 hmiMP_TEXTURE_Load(char* fileName, INT32* pWidth, INT32* pHeight)
 	*pHeight = 0;
 
 	if(NULL == fileName) {
-		printf("hmiMP_TEXTURE_Load:fileName NULL\n");
+		fprintf(stderr,"hmiMP_TEXTURE_Load:fileName NULL\n");
 		return (0);
 	}
 
 	pngHDL = MP_PNG_CreatePngForFile(fileName, pWidth, pHeight);
 	if (NULL == pngHDL) {
-		printf("hmiMP_TEXTURE_Load:MP_PNG_CreatePngForFile NULL (%s)\n",fileName);
+		fprintf(stderr,"hmiMP_TEXTURE_Load:MP_PNG_CreatePngForFile NULL (%s)\n",fileName);
 		return (0);
 	}
 
@@ -104,13 +104,13 @@ UINT32 hmiMP_TEXTURE_Memory(char* data, INT32* pWidth, INT32* pHeight,INT32 size
 	*pHeight = 0;
 
 	if(NULL == data) {
-		printf("hmiMP_TEXTURE_Load:data pointer NULL\n");
+		fprintf(stderr,"hmiMP_TEXTURE_Load:data pointer NULL\n");
 		return (0);
 	}
 
 	pngHDL = MP_PNG_CreatePngForImage(data, pWidth, pHeight, size);
 	if (NULL == pngHDL) {
-		printf("hmiMP_TEXTURE_Memory:MP_PNG_CreatePngForImage NULL\n");
+		fprintf(stderr,"hmiMP_TEXTURE_Memory:MP_PNG_CreatePngForImage NULL\n");
 		return (0);
 	}
 
@@ -137,18 +137,18 @@ INT32 hmiMP_ICON_Load(char* p_Path, char* p_InfoPath)
 	memset(g_IconTexture, 0, sizeof(g_IconTexture));
 
 	if(NULL == p_Path) {
-		printf("hmiMP_ICON_Load: p_Path NULL\n");
+		fprintf(stderr,"hmiMP_ICON_Load: p_Path NULL\n");
 		return NC_PARAM_ERROR;
 	}
 	if(NULL == p_InfoPath) {
-		printf("hmiMP_ICON_Load: p_InfoPath NULL\n");
+		fprintf(stderr,"hmiMP_ICON_Load: p_InfoPath NULL\n");
 		return NC_PARAM_ERROR;
 	}
 
 	// アイコン情報解析
 	fp = fopen(p_InfoPath, "rb");
 	if(NULL == fp) {
-		printf("hmiMP_ICON_Load: fp NULL\n");
+		fprintf(stderr,"hmiMP_ICON_Load: fp NULL\n");
 		return NC_PARAM_ERROR;
 	}
 	fseek(fp, 0, SEEK_END);
@@ -159,7 +159,7 @@ INT32 hmiMP_ICON_Load(char* p_Path, char* p_InfoPath)
 	if(hmi_create_image_source == 1){
 		wfp = fopen("image.c", "wb");
 		if(NULL == wfp) {
-			printf("hmiMP_ICON_Load: wfp can not create.\n");
+			fprintf(stderr,"hmiMP_ICON_Load: wfp can not create.\n");
 			return NC_PARAM_ERROR;
 		}
 		printf("create hmi image(image.c)\n");
@@ -209,7 +209,7 @@ INT32 hmiMP_ICON_Load(char* p_Path, char* p_InfoPath)
 			g_IconTexture[i].id = hmiMP_TEXTURE_Load(icon_path, &width, &height);
 #endif
 			if(0 == g_IconTexture[i].id) {
-				printf("hmiMP_ICON_Load: MP_TEXTURE_Load icon_path(%s)\n",icon_path);
+				fprintf(stderr,"hmiMP_ICON_Load: MP_TEXTURE_Load icon_path(%s)\n",icon_path);
 				ret = NC_PARAM_ERROR;
 				continue;
 			}
@@ -334,7 +334,7 @@ INT32 hmiMP_ICON_Initialize(void)
 			g_IconTexture[n].id = hmiMP_TEXTURE_Memory(hmi_image[i].image, &width, &height,hmi_image[i].size);
 
 			if(0 == g_IconTexture[n].id) {
-				printf("hmiMP_ICON_Initialize: hmiMP_TEXTURE_Memory bad image(%d.png)\n",i);
+				fprintf(stderr,"hmiMP_ICON_Initialize: hmiMP_TEXTURE_Memory bad image(%d.png)\n",i);
 				ret = NC_PARAM_ERROR;
 				continue;
 			}
@@ -353,7 +353,7 @@ INT32 hmiMP_ICON_Finalize(void)
 
 	for(i=1; i<g_IconCnt; i++) {
 		if(0 != g_IconTexture[i].id) {
-			printf("hmiMP_ICON_Finalize: ★MP_TEXTURE_Delete %d\n", g_IconTexture[i].id);
+			fprintf(stderr,"hmiMP_ICON_Finalize: ★MP_TEXTURE_Delete %d\n", g_IconTexture[i].id);
 			MP_TEXTURE_Delete((UINT32*)&g_IconTexture[i].id);
 		}
 		g_IconTexture[i].id = 0;
@@ -369,11 +369,11 @@ INT32 hmiMP_ICON_Draw(FLOAT x, FLOAT y, FLOAT angle, FLOAT scale, INT32 iconID)
 	INT32	ret = NC_SUCCESS;
 
 	if (iconID >= g_IconCnt) {
-		printf("hmiMP_ICON_Draw: (%d)\n",iconID);
+		fprintf(stderr,"hmiMP_ICON_Draw: (%d)\n",iconID);
 		return NC_PARAM_ERROR;
 	}
 	if (0 == g_IconTexture[iconID].id) {
-		printf("hmiMP_ICON_Draw: icon_id 0\n");
+		fprintf(stderr,"hmiMP_ICON_Draw: icon_id 0\n");
 		return NC_PARAM_ERROR;
 	}
 

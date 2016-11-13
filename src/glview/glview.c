@@ -194,7 +194,7 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 				int rc;
 				rc = (glv_context->eventFunc.reshape)(glv_context,glv_context->maps,rmsg.data[2],rmsg.data[3]);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.reshape error\n");
+					fprintf(stderr,"glv_context->eventFunc.reshape error\n");
 				}
 			}
 			break;
@@ -206,7 +206,7 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 				int rc;
 				rc = (glv_context->eventFunc.redraw)(glv_context,glv_context->maps);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.redraw error\n");
+					fprintf(stderr,"glv_context->eventFunc.redraw error\n");
 				}
 			}
 			eglSwapBuffers(glv_context->glv_win->glv_dpy->egl_dpy, glv_context->egl_surf);
@@ -218,7 +218,7 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 				int rc;
 				rc = (glv_context->eventFunc.update)(glv_context,glv_context->maps);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.update error\n");
+					fprintf(stderr,"glv_context->eventFunc.update error\n");
 				}
 			}
 			break;
@@ -229,11 +229,9 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 				if(glv_context->eventFunc.timer != NULL){
 					int rc;
 					rc = (glv_context->eventFunc.timer)(glv_context,glv_context->maps,rmsg.data[2],rmsg.data[3]);
-#if 1
 					if(rc != GLV_OK){
-						printf("glv_context->eventFunc.timer error\n");
+						fprintf(stderr,"glv_context->eventFunc.timer error\n");
 					}
-#endif
 				}
 			}else{
 				//printf("GLV_ON_TIMER id = %d IGNORE\n",rmsg.data[3]);
@@ -246,7 +244,7 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 				rc = (glv_context->eventFunc.gesture)(glv_context,glv_context->maps,
 						rmsg.data[2],rmsg.data[3],rmsg.data[4],rmsg.data[5],rmsg.data[6],rmsg.data[7],rmsg.data[8]);
 				if(rc != GLV_OK){
-					printf("glv_context->eventFunc.gesture error\n");
+					fprintf(stderr,"glv_context->eventFunc.gesture error\n");
 				}
 			}
 			break;
@@ -313,7 +311,7 @@ void *glvSurfaceViewProc(void *param)
 	ctxattr[1] = api;
 	egl_ctx = eglCreateContext ( egl_dpy, config, EGL_NO_CONTEXT, ctxattr );
 	if(egl_ctx == EGL_NO_CONTEXT ) {
-	   printf("glvSurfaceViewProc:Unable to create EGL context (eglError: %d)\n", eglGetError());
+	   fprintf(stderr,"glvSurfaceViewProc:Unable to create EGL context (eglError: %d)\n", eglGetError());
 	   exit(-1);
 	}
 #endif
@@ -322,13 +320,13 @@ void *glvSurfaceViewProc(void *param)
 	egl_surf = eglCreateWindowSurface(egl_dpy, config, win, NULL);
 
    if (!egl_surf) {
-      printf("glvSurfaceViewProc:Error: eglCreateWindowSurface failed\n");
+      fprintf(stderr,"glvSurfaceViewProc:Error: eglCreateWindowSurface failed\n");
       exit(-1);
    }
    glv_context->egl_surf = egl_surf;
 
    if (!eglMakeCurrent(egl_dpy, egl_surf, egl_surf, egl_ctx)) {
-      printf("glvSurfaceViewProc:Error: eglMakeCurrent() failed\n");
+      fprintf(stderr,"glvSurfaceViewProc:Error: eglMakeCurrent() failed\n");
       exit(-1);
    }
    if(instanceCount == 0){
@@ -349,7 +347,7 @@ void *glvSurfaceViewProc(void *param)
 	   int rc;
 	   rc = (glv_context->eventFunc.init)(glv_context,glv_context->maps);
 	   if(rc != GLV_OK){
-		   printf("glv_context->eventFunc.init error\n");
+		   fprintf(stderr,"glv_context->eventFunc.init error\n");
 	   }
    }
 
@@ -389,7 +387,7 @@ GLVContext glvCreateSurfaceView(GLVWindow glv_win,int maps,GLVEVENTFUNC_t *event
 
 	// メッセージキュー生成
 	if (0 != pthread_msq_create(&glv_context->queue, 50)) {
-		printf("glvSurfaceViewProc:Error: pthread_msq_create() failed\n");
+		fprintf(stderr,"glvSurfaceViewProc:Error: pthread_msq_create() failed\n");
 		exit(-1);
 	}
 	// スレッド生成

@@ -111,7 +111,7 @@ int pthreadCreateTimer(pthread_t threadId,pthread_msq_id_t *queue,int userData,i
 	}
 
 	pthread_mutex_unlock(&pthread_timer_mutex);
-	printf("pthreadCreateTimer:timer tavle over [%d] \n",i);
+	fprintf(stderr,"pthreadCreateTimer:timer tavle over [%d] \n",i);
 	/* table over */
 	return(PTHREAD_TIMER_ERROR);
 }
@@ -385,7 +385,7 @@ void pthreadInitTimer(void)
 		pthread_timer_table[i].queue		= NULL;
 	}
     if (sem_init(&timer_sem, 0, 0) == -1){
-		printf("pthreadTimeProc:Error: sem_init() failed\n");
+		fprintf(stderr,"pthreadTimeProc:Error: sem_init() failed\n");
     	return;
     }
 

@@ -34,11 +34,11 @@ INT32 NC_Initialize(INT32 iwidth, INT32 iheight, const Char* strRootPath, const 
 	Char logDirPath[SC_MAX_PATH] = {};
 	Char configDirPath[SC_MAX_PATH] = {};
 
-	printf("\n");
-	printf("navi-core version %s(" __DATE__ ") , api version %s\n",CORE_VERSION,API_VERSION);
-	printf("Copyright (c) 2016  Hitachi, Ltd.\n");
-	printf("This program is dual licensed under GPL version 2 or a commercial license.\n");
-	printf("\n");
+	fprintf(stdout,"\n");
+	fprintf(stdout,"navi-core version %s(" __DATE__ ") , api version %s\n",CORE_VERSION,API_VERSION);
+	fprintf(stdout,"Copyright (c) 2016  Hitachi, Ltd.\n");
+	fprintf(stdout,"This program is dual licensed under GPL version 2 or a commercial license.\n");
+	fprintf(stdout,"\n");
 
 	SC_LOG_DebugPrint(SC_TAG_NC, SC_LOG_START);
 

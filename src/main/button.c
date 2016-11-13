@@ -176,7 +176,7 @@ int sample_hmi_check_button_area(int x,int y,int on)
 		if(button->visible  != 1) continue;
 		if( (button->x1 < x ) && (button->x2 > x) &&
 			(button->y1 < y ) && (button->y2 > y) 	){
-			printf("check button = %d\n",button->type);
+			//printf("check button = %d\n",button->type);
 			current_push_buttonId = button->type;
 			current_push_buttonOn = on;
 			return(button->type);
@@ -312,7 +312,7 @@ void sample_hmi_update(GLVContext glv_ctx)
 	/* ------------------------------------------ */
 	if(updateFlag == 0) return;
 
-	printf("----------[HMI Update]--------------\n");
+	//printf("----------[HMI Update]--------------\n");
 	sample_hmi_set_button_visible(DEMO_BUTTON_OWNPOSI,0);
 	sample_hmi_set_button_visible(DEMO_BUTTON_ROUTE,0);
 	sample_hmi_set_button_visible(DEMO_BUTTON_GUIDE_START,0);
@@ -661,7 +661,7 @@ int sample_hmi_button_down(int pointer_sx,int pointer_sy)
 {
 	hmi_onmap_buttonId = sample_hmi_check_button_area(pointer_sx,pointer_sy,1);
 	if(hmi_onmap_buttonId > -1){
-		printf("sample_hmi_check_button_area (%d)\n",hmi_onmap_buttonId);
+		//printf("sample_hmi_check_button_area (%d)\n",hmi_onmap_buttonId);
 		hmi_onmap_button = 1;
 		sample_hmi_request_update();
 		return(1);

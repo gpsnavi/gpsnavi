@@ -73,14 +73,14 @@ keyboard_handle_enter(void *data, struct wl_keyboard *keyboard,
                       uint32_t serial, struct wl_surface *surface,
                       struct wl_array *keys)
 {
-    fprintf(stderr, "Keyboard gained focus\n");
+    //fprintf(stderr, "Keyboard gained focus\n");
 }
 
 static void
 keyboard_handle_leave(void *data, struct wl_keyboard *keyboard,
                       uint32_t serial, struct wl_surface *surface)
 {
-    fprintf(stderr, "Keyboard lost focus\n");
+    //fprintf(stderr, "Keyboard lost focus\n");
 }
 
 static void
@@ -101,8 +101,8 @@ keyboard_handle_modifiers(void *data, struct wl_keyboard *keyboard,
                           uint32_t mods_latched, uint32_t mods_locked,
                           uint32_t group)
 {
-    fprintf(stderr, "Modifiers depressed %d, latched %d, locked %d, group %d\n",
-	    mods_depressed, mods_latched, mods_locked, group);
+	//fprintf(stderr, "Modifiers depressed %d, latched %d, locked %d, group %d\n",
+	//    mods_depressed, mods_latched, mods_locked, group);
 }
 
 static const struct wl_keyboard_listener keyboard_listener = {
@@ -126,14 +126,14 @@ pointer_handle_enter(void *data, struct wl_pointer *pointer,
                      uint32_t serial, struct wl_surface *surface,
                      wl_fixed_t sx, wl_fixed_t sy)
 {
-    fprintf(stderr, "Pointer entered surface %p at %d %d\n", surface, sx, sy);
+    //fprintf(stderr, "Pointer entered surface %p at %d %d\n", surface, sx, sy);
 }
 
 static void
 pointer_handle_leave(void *data, struct wl_pointer *pointer,
                      uint32_t serial, struct wl_surface *surface)
 {
-    fprintf(stderr, "Pointer left surface %p\n", surface);
+    //fprintf(stderr, "Pointer left surface %p\n", surface);
 }
 
 static void
@@ -160,7 +160,7 @@ pointer_handle_button(void *data, struct wl_pointer *wl_pointer,
 {
 	int rc;
 	GLVMOUSEEVENT_t	glv_mouse_enent;
-    printf("Pointer button\n");
+    //printf("Pointer button\n");
     if(button == BTN_LEFT){
     	if(state == WL_POINTER_BUTTON_STATE_PRESSED){
     		rc = 0;
@@ -199,7 +199,7 @@ static void
 pointer_handle_axis(void *data, struct wl_pointer *wl_pointer,
                     uint32_t time, uint32_t axis, wl_fixed_t value)
 {
-        printf("Pointer handle axis\n");
+	//printf("Pointer handle axis\n");
 }
 
 static const struct wl_pointer_listener pointer_listener = {
@@ -219,8 +219,8 @@ touch_handle_down(void *data, struct wl_touch *touch, uint32_t serial,
 	int rc;
 	/* This does not support multi-touch, since implementation is for testing */
 	if (id > 0) {
-		printf("Receive touch down event with touch id(%d), "
-			   "but this is not handled\n", id);
+		//printf("Receive touch down event with touch id(%d), "
+		//	   "but this is not handled\n", id);
 		return;
 	}
 	struct touch_event_data *touch_event = data;
@@ -327,15 +327,15 @@ seat_handle_capabilities(void *data, struct wl_seat *seat,
                          enum wl_seat_capability caps)
 {
     if (caps & WL_SEAT_CAPABILITY_POINTER) {
-	printf("Display has a pointer\n");
+		//printf("Display has a pointer\n");
     }
 
     if (caps & WL_SEAT_CAPABILITY_KEYBOARD) {
-	printf("Display has a keyboard\n");
+		//printf("Display has a keyboard\n");
     }
 
     if (caps & WL_SEAT_CAPABILITY_TOUCH) {
-	printf("Display has a touch screen\n");
+		//printf("Display has a touch screen\n");
     }
 
     if ((caps & WL_SEAT_CAPABILITY_POINTER) && !pointer) {
@@ -375,7 +375,7 @@ handle_ping(void *data, struct wl_shell_surface *shell_surface,
 	    uint32_t serial)
 {
 	wl_shell_surface_pong(shell_surface, serial);
-	fprintf(stderr, "Pinged and ponged\n");
+	//fprintf(stderr, "Pinged and ponged\n");
 }
 
 static void
@@ -497,7 +497,7 @@ void _glvOpenNativeDisplay(GLVDISPLAY_t *glv_dpy)
 	   glv_dpy->wl_dpy.display = glv_dpy->native_dpy;
 
 	   if (!glv_dpy->native_dpy){
-	      printf("failed to initialize native display\n");
+	      fprintf(stderr,"failed to initialize native display\n");
 	   }
 	   glv_dpy->wl_dpy.compositor = 0;
 	   glv_dpy->wl_dpy.shell = 0;
