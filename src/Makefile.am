@@ -595,6 +595,7 @@ LICENSE \
 COPYING
 
 navi_CPPFLAGS = \
+        -D_BSD_SOURCE \
         -I$(top_srcdir)/src/sms \
         -I$(top_srcdir)/src/sms/lib/include \
         -I$(top_srcdir)/src/sms/locator/include \
@@ -626,6 +627,7 @@ navi_CXXFLAGS = \
         @OPENSSL_CFLAGS@
 
 navi_LDADD = \
+	-lrt \
 	libnavicore.la \
         @GLIB_LIBS@ \
         @FREETYPE2_LIBS@ \

@@ -24,6 +24,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 
 #include "navicore.h"
 #include "glview.h"
@@ -86,6 +92,29 @@ static int resolution = NAVI_RESOLUTION_AGL_DEMO;
 
 static int region     = NAVI_REGION_JAPAN;
 //static int region     = NAVI_REGION_UK;
+
+
+#define SHM_FILE_MODE (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH)
+
+void *g_GeocordSHM = NULL;
+
+int Create_GeocordSHM(void)
+{
+	int fd = 0;
+	struct stat sstat;
+
+	memset(&sstat,0,sizeof(sstat));
+		
+	fd = shm_open("/shm_navigation_geocord", (O_RDWR|O_CREAT), SHM_FILE_MODE);
+	ftruncate(fd, 4096);
+	fstat(fd, &sstat);
+	
+	g_GeocordSHM = mmap(NULL,sstat.st_size,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+	
+	close(fd);
+	
+	return 0;
+}
 
 void naviGetResolution(int *w,int *h)
 {
@@ -556,6 +585,8 @@ int main(int argc, char *argv[])
 	NC_MP_SetImageReadForFileCB(ReadImageForFileCallBack);
 	NC_MP_SetImageReadForImageCB(SetImageForMemoryCallBack);
 	NC_MP_SetMapDrawEndCB(MapDrawEndCallBack);
+
+	Create_GeocordSHM();
 
 	rc = NC_Initialize(WinWidth,WinHeight,navi_config_user_data_path,navi_config_map_db_path,"locatorPath");
 	if(NC_SUCCESS != rc){

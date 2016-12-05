@@ -39,7 +39,9 @@ static pthread_mutex_t pthread_current_guide_info_mutex = PTHREAD_MUTEX_INITIALI
 #define GUIDE_ON_GUIDE_END		(3)
 
 #define GUIDE_TIMER_ID			(1)
-#define GUIDE_REPEAT_TIME		(300)
+#define GUIDE_REPEAT_TIME		(600)
+
+extern void *g_GeocordSHM;
 
 int sample_get_guide_info(SMREALTIMEGUIDEDATA	*guide_info)
 {
@@ -111,6 +113,26 @@ static void *guideThread(void *no_arg)
 				NC_Simulation_CalcNextPos();	//	GC_Simulation_SetSpeedで設定した距離だけ、シミュレーションでの車両位置を進める
 		//		NC_Guide_RunGuide();		//	経路誘導を実行する
 				NC_Guide_GetRealTimeInfo(&guide_info);	//	リアルタイムの案内情報を取得する
+
+				{
+					/*
+					extern int SC_MNG_GetMapCursorCoord(INT32 maps, SMGEOCOORD *geoCoord);
+					SMGEOCOORD geo;
+					memset(&geo,0,sizeof(SMGEOCOORD));
+					SC_MNG_GetMapCursorCoord(0, &geo);
+					
+					memcpy(g_GeocordSHM,&geo,sizeof(SMGEOCOORD));
+					*/
+					
+					SMCARSTATE car;
+					memset(&car ,0 ,sizeof(SMCARSTATE));
+					
+					NC_DM_GetCarState(&car, e_SC_CARLOCATION_NOW);
+					
+					memcpy(g_GeocordSHM,&car,sizeof(SMCARSTATE));
+					
+					//fprintf(stdout,"GEO: %d,%d\n",geo.longitude,geo.latitude);
+				}
 
 				if((guide_info.turnDir > 0)&&(guide_info.turnDir < 22)){
 					sample_set_demo_icon_guide_flag(&guide_info.coord);	// 交差点座標
