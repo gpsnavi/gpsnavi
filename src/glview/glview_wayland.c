@@ -27,6 +27,10 @@
 #include <wayland-client.h>
 #include <wayland-egl.h>
 
+#define	IVISHELL	(1)
+#define IVI_SURFACE_ID (9000)
+#include "ivi-application-client-protocol.h"
+
 #include <poll.h>
 #include <errno.h>
 #include <string.h>
@@ -428,7 +432,13 @@ registry_handle_global(void *data, struct wl_registry *registry, uint32_t id,
 #endif /* GLV_WAYLAND_INPUT */
    else if (strcmp(interface, "wl_subcompositor") == 0) {
    		d->subcompositor = wl_registry_bind(registry, id, &wl_subcompositor_interface, 1);
-   	}
+	}
+	else if (strcmp(interface, "ivi_application") == 0)
+	{
+		d->ivi_application =
+			wl_registry_bind(registry, id,
+					 &ivi_application_interface, 1);
+	}
 }
 
 static void
@@ -520,9 +530,10 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 {
 	struct wl_surface		*parent;
 	struct wl_surface		*surface;
-	struct wl_subsurface	*subsurface;
-	struct wl_shell_surface	*shell_surface;
-
+	struct wl_subsurface	*subsurface  = NULL;
+	struct wl_shell_surface	*shell_surface = NULL;
+	struct ivi_surface		*ivi_surface  = NULL;
+	
 	struct wl_egl_window	*native;
 	struct wl_region		*region;
 	WLDISPLAY_t	*wl_dpy;
@@ -548,15 +559,30 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 		wl_surface_set_opaque_region(surface, region);
 		wl_region_destroy(region);
 
-		shell_surface = wl_shell_get_shell_surface(wl_dpy->shell,surface);
-
 		native = wl_egl_window_create(surface, width, height);
 
+#ifdef IVISHELL
+		{
+			uint32_t id_ivisurf = IVI_SURFACE_ID + (uint32_t)getpid();
+			ivi_surface = ivi_application_surface_create(wl_dpy->ivi_application, id_ivisurf, surface);
+		
+			if (ivi_surface == NULL) {
+				fprintf(stderr, "Failed to create ivi_client_surface\n");
+				abort();
+			}
+
+			//ivi_surface_add_listener(window->ivi_surface,
+			//			 &ivi_surface_listener, window);
+		}
+#else
+		shell_surface = wl_shell_get_shell_surface(wl_dpy->shell,surface);
 		wl_shell_surface_set_toplevel(shell_surface);
 
 #ifdef GLV_WAYLAND_INPUT
 		wl_shell_surface_add_listener(shell_surface,&shell_surface_listener, NULL);
 #endif /* GLV_WAYLAND_INPUT */
+#endif	//#ifdef IVISHELL
+
 		// -----------------------------------------------------------------------------------------------------------------
 	}else{
 		// -----------------------------------------------------------------------------------------------------------------
@@ -584,6 +610,7 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 	glv_window->wl_window.surface       = surface;
 	glv_window->wl_window.subsurface    = subsurface;
 	glv_window->wl_window.shell_surface = shell_surface;
+	glv_window->wl_window.ivi_surface   = ivi_surface;
 	glv_window->wl_window.callback      = 0;
 	glv_window->wl_window.x             = x;
 	glv_window->wl_window.y             = y;

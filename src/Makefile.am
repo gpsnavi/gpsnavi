@@ -570,6 +570,7 @@ sms/sms-core/SMCoreMP/MP_GL.h \
 sms/sms-core/SMUtil/pthread_msq.h \
 glview/glview.c \
 glview/glview_wayland.c \
+glview/ivi-application-protocol.c \
 yspng/yspng.cpp \
 pthread/pthread_timer.c \
 main/navi.c \
@@ -582,6 +583,7 @@ main/font.cpp \
 main/image.c \
 glview/glview_local.h \
 glview/glview.h \
+glview/ivi-application-client-protocol.h \
 yspng/yspng.h \
 pthread/pthread_timer.h \
 main/png.h \
