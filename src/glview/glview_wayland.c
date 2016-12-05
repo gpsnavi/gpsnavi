@@ -563,7 +563,7 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 
 #ifdef IVISHELL
 		{
-			uint32_t id_ivisurf = IVI_SURFACE_ID + (uint32_t)getpid();
+			uint32_t id_ivisurf = 0x1302;
 			ivi_surface = ivi_application_surface_create(wl_dpy->ivi_application, id_ivisurf, surface);
 		
 			if (ivi_surface == NULL) {
