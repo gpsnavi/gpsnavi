@@ -119,7 +119,7 @@ int search_map_data(void)
 		return 0;
 	}
 	
-	ret = stat(NAVI_AGL_DEFAULT_PATH_UK, &sb);
+	ret = stat(NAVI_AGL_DEFAULT_PATH_JAPAN, &sb);
 	if (ret == 0)
 	{
 		strcpy(navi_config_path, NAVI_AGL_DEFAULT_PATH_JAPAN);
