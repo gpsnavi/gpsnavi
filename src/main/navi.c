@@ -502,6 +502,7 @@ int main_arg(int argc, char *argv[])
 {
 	int width,height;
 	int i,n;
+	char *home;
 	int ret = -1;
 	
 	ret = search_map_data();
