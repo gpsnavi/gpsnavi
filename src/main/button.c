@@ -3,6 +3,7 @@
  *
  *
  * Copyright (c) 2016  Hitachi, Ltd.
+ * Copyright (c) 2016  Aisin AW, Ltd.
  *
  * This program is dual licensed under GPL version 2 or a commercial license.
  * See the LICENSE file distributed with this source file.
@@ -30,10 +31,11 @@
 extern GLVContext glv_hmi_context;
 extern GLVContext glv_map_context;
 
+int hmi_compass=0;
+
 static int hmi_move_with_car=-1;
 static int old_hmi_set_pin=-1;
 static int hmi_set_pin=0;
-static int hmi_compass=0;
 static int hmi_fource_update_flag = 0;
 
 #define DEMO_BUTTON_OWNPOSI			(0)

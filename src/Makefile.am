@@ -574,13 +574,16 @@ glview/ivi-application-protocol.c \
 yspng/yspng.cpp \
 pthread/pthread_timer.c \
 main/navi.c \
-main/guide.c \
 main/route.c \
-main/png.cpp \
+main/guide.c \
 main/button.c \
+main/png.cpp \
 main/HMI_Icon.c \
 main/font.cpp \
 main/image.c \
+api/server.cpp \
+api/genivi-navicore.cpp \
+api/genivi-mapviewer.cpp \
 glview/glview_local.h \
 glview/glview.h \
 glview/ivi-application-client-protocol.h \
@@ -604,7 +607,10 @@ navi_CPPFLAGS = \
         -I$(top_srcdir)/src/sms/sms-core/SMUtil \
         -I$(top_srcdir)/src/glview \
         -I$(top_srcdir)/src/yspng \
-        -I$(top_srcdir)/src/pthread
+        -I$(top_srcdir)/src/pthread \
+        -I$(top_srcdir)/src/main \
+        -I$(top_srcdir)/src/api
+
 
 navi_CFLAGS = \
         @GLIB_CFLAGS@ \
@@ -614,9 +620,10 @@ navi_CFLAGS = \
         @ZLIB_CFLAGS@ \
         @SQLITE3_CFLAGS@ \
         @EXPAT_CFLAGS@ \
-        @OPENSSL_CFLAGS@
+        @OPENSSL_CFLAGS@ \
+        @DBUSCXX_CFLAGS@
 
-navi_CXXFLAGS = \
+navi_CXXFLAGS = -std=c++11 \
         @GLIB_CFLAGS@ \
         @FREETYPE2_CFLAGS@ \
         @WAYLAND_CFLAGS@ \
@@ -624,7 +631,8 @@ navi_CXXFLAGS = \
         @ZLIB_CFLAGS@ \
         @SQLITE3_CFLAGS@ \
         @EXPAT_CFLAGS@ \
-        @OPENSSL_CFLAGS@
+        @OPENSSL_CFLAGS@ \
+        @DBUSCXX_CFLAGS@
 
 navi_LDADD = \
 	-lrt \
@@ -636,7 +644,8 @@ navi_LDADD = \
         @ZLIB_LIBS@ \
         @SQLITE3_LIBS@ \
         @EXPAT_LIBS@ \
-        @OPENSSL_LIBS@
+        @OPENSSL_LIBS@ \
+        @DBUSCXX_LIBS@
 
 #
 

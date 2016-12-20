@@ -3,6 +3,7 @@
  *
  *
  * Copyright (c) 2016  Hitachi, Ltd.
+ * Copyright (c) 2016  Aisin AW, Ltd. 
  *
  * This program is dual licensed under GPL version 2 or a commercial license.
  * See the LICENSE file distributed with this source file.
@@ -13,6 +14,8 @@
  *
  *  Created on: 2015/11/05
  *      Author:t.aikawa
+ *  Modified on: 2016/09/26
+ *      Author:clement.dransart@awtce.be
  */
 
 /*
@@ -30,13 +33,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
 #include "navicore.h"
 #include "glview.h"
 #include "png.h"
 #include "font.h"
 #include "navi.h"
 #include "HMI_Icon.h"
+
+#include "server.h"
 
 #define APP_NAME_TEXT		"navi - sample GPS Navigation Version 0.0.7 (build 031 " __DATE__ ")"
 
@@ -677,6 +681,8 @@ int main(int argc, char *argv[])
 	sample_createGuideThread();
 
 	glvOnReDraw(glv_map_context);
+
+	CreateAPIServer();
 
 	glvEventLoop(glv_dpy);
 

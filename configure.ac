@@ -22,6 +22,7 @@ PKG_CHECK_MODULES([ZLIB], [zlib])
 PKG_CHECK_MODULES([SQLITE3], [sqlite3])
 PKG_CHECK_MODULES([EXPAT], [expat])
 PKG_CHECK_MODULES([OPENSSL], [openssl])
+PKG_CHECK_MODULES([DBUSCXX], [dbus-c++-1])
 
 # Checks for programs.
 AC_PROG_CC
