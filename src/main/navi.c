@@ -215,7 +215,7 @@ void naviStartUpResolution(int resolution)
 		break;
 	case NAVI_RESOLUTION_AGL_DEMO:		// CES 2016 demo
 		WinWidth	= 1080;
-		WinHeight	= 1670;
+		WinHeight	= (1920 - 218 - 215);
 		break;
 	default:
 		break;
