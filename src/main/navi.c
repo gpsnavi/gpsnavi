@@ -65,8 +65,8 @@ int sample_hmi_load_image_file=0;
 #define NAVI_CONFIG_PATH_GERMANY	NAVI_HOME_PATH NAVI_DATA_PATH "germany_TR6/"
 #define NAVI_CONFIG_PATH_NEVADA		NAVI_HOME_PATH NAVI_DATA_PATH "nevada_TR6/"
 
-#define NAVI_AGL_DEFAULT_PATH_JAPAN	"/usr/share/mapdata/navi_data/japan_TR9"
-#define NAVI_AGL_DEFAULT_PATH_UK	"/usr/share/mapdata/navi_data_UK/UnitedKingdom_TR9"
+#define NAVI_AGL_DEFAULT_PATH_JAPAN	"/var/mapdata/navi_data/japan_TR9"
+#define NAVI_AGL_DEFAULT_PATH_UK	"/var/mapdata/navi_data_UK/UnitedKingdom_TR9"
 
 #define NAVI_REGION_OPTIONAL	(-1)
 #define NAVI_REGION_JAPAN		(0)
