@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="navigation" version="0.1">
+  <name>Navigation</name>
+  <icon src="navigation.png"/>
+  <content src="navi" type="application/x-executable"/>
+  <description>NAVIGATION App</description>
+  <author>AISIN AW</author>
+  <license>GPL</license>
+</widget>
