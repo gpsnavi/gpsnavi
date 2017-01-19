@@ -15,6 +15,6 @@ jtalk: jtalk.in
 navigation.wgt:src/navi
 	rm -f agl/navigation.wgt
 	mkdir -p agl
-	cp src/navi agl/
+	cp src/.libs/navi agl/
 	cp $(srcdir)/agl/config.xml agl/
 	wgtpkg-pack -f -o navigation.wgt agl/
