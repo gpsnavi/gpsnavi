@@ -104,6 +104,7 @@ static int region     = NAVI_REGION_JAPAN;
 #define SHM_FILE_MODE (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH)
 
 void *g_GeocordSHM = NULL;
+static int g_voicelanguage = 0;
 
 int search_map_data(void)
 {
@@ -119,6 +120,7 @@ int search_map_data(void)
 			strcat(navi_config_path, "/");
 		}
 		region = NAVI_REGION_OPTIONAL;
+		g_voicelanguage = 2;
 		
 		return 0;
 	}
@@ -132,6 +134,7 @@ int search_map_data(void)
 			strcat(navi_config_path, "/");
 		}
 		region = NAVI_REGION_OPTIONAL;
+		g_voicelanguage = 1;
 		
 		return 0;
 	}
@@ -641,6 +644,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr," map  db   path(%s)\n",navi_config_map_db_path);
 		return(-1);
 	}
+
+	if (g_voicelanguage == 1) SC_MNG_SetLanguage(1);
+	else if (g_voicelanguage == 2) SC_MNG_SetLanguage(2);
+	
 
 	NC_MP_SetMapMoveWithCar(NC_MP_MAP_MAIN,1);
 	NC_MP_SetMapScaleLevel(NC_MP_MAP_MAIN,main_window_mapScale);
