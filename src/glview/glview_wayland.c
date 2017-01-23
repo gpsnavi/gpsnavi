@@ -568,6 +568,11 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 
 		native = wl_egl_window_create(surface, width, height);
 
+#if 1 // サブサーフェイスへのイベント通知を無効
+        region = wl_compositor_create_region(wl_dpy->compositor);
+        wl_surface_set_input_region(surface, region);
+        wl_region_destroy(region);
+#endif
 		wl_subsurface_set_position(subsurface, x, y);
 		// -----------------------------------------------------------------------------------------------------------------
 	}
