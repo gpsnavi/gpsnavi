@@ -89,7 +89,7 @@
 	}"
 #else
 #define VSHADER_VERTEX_ARRAY  "\
-	precision mediump float;\
+	precision highp float;\
 	attribute vec4 a_pos;\
 	attribute vec4 a_color;\
 	attribute vec2 a_texture;\
@@ -114,7 +114,7 @@
 	}"
 
 #define FSHADER_VERTEX_ARRAY  "\
-	precision mediump float;\
+	precision highp float;\
 	uniform bool u_texture_arrey;\
 	uniform sampler2D texture0;\
 	varying vec2 v_texcoord;\
