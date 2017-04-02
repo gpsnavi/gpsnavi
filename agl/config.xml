@@ -5,5 +5,8 @@
   <content src="navi" type="application/x-executable"/>
   <description>NAVIGATION App</description>
   <author>AISIN AW</author>
+  <feature name="urn:AGL:required-permission">
+    <param name="http://tizen.org/privilege/internal/dbus" value="required" />
+  </feature>
   <license>GPL</license>
 </widget>

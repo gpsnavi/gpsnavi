@@ -3,6 +3,14 @@
 
 AC_PREREQ([2.68])
 AC_INIT([navi], [0.0.8], [gpsnavi-inquiry@itg.hitachi.co.jp])
+
+AC_ARG_ENABLE([standalone],
+  [AS_HELP_STRING([--enable-standalone], [Enable non AGL build (default is no)])],
+  [:],
+  [enable_standalone=no])
+
+AM_CONDITIONAL([ENABLE_STANDALONE], [test "$enable_standalone" = "yes"])
+
 AM_INIT_AUTOMAKE()
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/main/navi.c])

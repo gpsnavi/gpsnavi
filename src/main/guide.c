@@ -5,7 +5,7 @@
  * Copyright (c) 2016  Hitachi, Ltd.
  * Copyright (c) 2016  Aisin AW, Ltd.
  *
- * This program is dual licensed under GPL version 2 or a commercial license.
+ * This program is licensed under GPL version 2 license.
  * See the LICENSE file distributed with this source file.
  */
 
@@ -116,14 +116,6 @@ static void *guideThread(void *no_arg)
 				NC_Guide_GetRealTimeInfo(&guide_info);	//	リアルタイムの案内情報を取得する
 
 				{
-					/*
-					extern int SC_MNG_GetMapCursorCoord(INT32 maps, SMGEOCOORD *geoCoord);
-					SMGEOCOORD geo;
-					memset(&geo,0,sizeof(SMGEOCOORD));
-					SC_MNG_GetMapCursorCoord(0, &geo);
-					
-					memcpy(g_GeocordSHM,&geo,sizeof(SMGEOCOORD));
-					*/
 					
 					SMCARSTATE car;
 					memset(&car ,0 ,sizeof(SMCARSTATE));
@@ -131,8 +123,6 @@ static void *guideThread(void *no_arg)
 					NC_DM_GetCarState(&car, e_SC_CARLOCATION_NOW);
 					
 					memcpy(g_GeocordSHM,&car,sizeof(SMCARSTATE));
-					
-					//fprintf(stdout,"GEO: %d,%d\n",geo.longitude,geo.latitude);
 				}
 
 				if((guide_info.turnDir > 0)&&(guide_info.turnDir < 22)){

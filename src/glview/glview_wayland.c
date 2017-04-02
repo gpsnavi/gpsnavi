@@ -3,8 +3,9 @@
  *
  *
  * Copyright (c) 2016  Hitachi, Ltd.
+ * Copyright (c) 2016  Aisin AW, Ltd
  *
- * This program is dual licensed under GPL version 2 or a commercial license.
+ * This program is licensed under GPL version 2 license.
  * See the LICENSE file distributed with this source file.
  */
 
@@ -28,7 +29,7 @@
 #include <wayland-egl.h>
 
 #define	IVISHELL	(1)
-#define IVI_SURFACE_ID (9000)
+#define IVI_SURFACE_ID (0x1302)
 #include "ivi-application-client-protocol.h"
 
 #include <poll.h>
@@ -575,16 +576,13 @@ GLVWindow _glvCreateNativeWindow(GLVDISPLAY_t *glv_dpy,
 
 #ifdef IVISHELL
 		{
-			uint32_t id_ivisurf = 0x1302;
+			uint32_t id_ivisurf = IVI_SURFACE_ID;
 			ivi_surface = ivi_application_surface_create(wl_dpy->ivi_application, id_ivisurf, surface);
 		
 			if (ivi_surface == NULL) {
 				fprintf(stderr, "Failed to create ivi_client_surface\n");
 				abort();
 			}
-
-			//ivi_surface_add_listener(window->ivi_surface,
-			//			 &ivi_surface_listener, window);
 		}
 #else
 		shell_surface = wl_shell_get_shell_surface(wl_dpy->shell,surface);

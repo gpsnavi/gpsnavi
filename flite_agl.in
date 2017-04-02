@@ -1,0 +1,6 @@
+#!/bin/sh
+TMP=/tmp/navi.wav
+echo "$1" | flite_hts_engine -m  @datadir@/Voice/us/cmu_us_arctic_slt.htsvoice -o $TMP
+paplay --property='media.role=Navi' $TMP
+rm -f $TMP
+

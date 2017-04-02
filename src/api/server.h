@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2016  Aisin AW, Ltd
  *
- * This program is dual licensed under GPL version 2 or a commercial license.
+ * This program is licensed under GPL version 2 license.
  * See the LICENSE file distributed with this source file.
  */
 #ifndef SERVER_H

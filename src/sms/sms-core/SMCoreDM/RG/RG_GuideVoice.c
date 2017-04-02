@@ -3,8 +3,9 @@
  *
  *
  * Copyright (c) 2016  Hitachi, Ltd.
+ * Copyright (c) 2016  Aisin AW, Ltd
  *
- * This program is dual licensed under GPL version 2 or a commercial license.
+ * This program is licensed under GPL version 2 license.
  * See the LICENSE file distributed with this source file.
  */
 
@@ -156,21 +157,25 @@ E_SC_RESULT RG_CTL_CreateVoiceText(RT_NAME_t *in, INT32 language)
 {
 	int i = 0,j = 0;
 	int code,num;
+	int len = 0;
 	char tts_voice[TTSMAX];
 	
 	memset(tts_voice,0,TTSMAX);
 	
 	if (language == SYS_LANGUAGE_EN)
 	{
-		strcat(tts_voice, "flite \"");
+		strncat(tts_voice, "flite \"", (TTSMAX - len - 1));
 	}
 	else
 	{
-		strcat(tts_voice, "jtalk \"");
+		strncat(tts_voice, "jtalk \"", (TTSMAX - len - 1));
 	}
 	
 	while(1)
 	{
+		len = strlen(tts_voice);
+		if (len > (TTSMAX - 10)) break;
+		
 		code = in->voice.voice_list[j];
 		
 		if (code == 0) break;
@@ -186,15 +191,24 @@ E_SC_RESULT RG_CTL_CreateVoiceText(RT_NAME_t *in, INT32 language)
 			}
 		}
 		
-		if (num > 0)
+		if (num >= 0)
 		{
-			strcat(tts_voice,g_TTS_TEXT_TBL[num].text);
+			strncat(tts_voice,g_TTS_TEXT_TBL[num].text, (TTSMAX - len - 1));
 		}
 	}
 	
-	strcat(tts_voice, "\" & ");
+	len = strlen(tts_voice);
 	
-	system(tts_voice);
+	if (len > (TTSMAX - 10))
+	{
+		//TTSバッファが限界なので再生しない
+	}
+	else
+	{
+		strncat(tts_voice, "\" & ", (TTSMAX - len - 1));
+		
+		system(tts_voice);
+	}
 	
 	return (e_SC_RESULT_SUCCESS);
 }
