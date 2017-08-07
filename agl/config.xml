@@ -9,4 +9,8 @@
     <param name="http://tizen.org/privilege/internal/dbus" value="required" />
   </feature>
   <license>GPL</license>
+  <feature name="urn:AGL:widget:file-properties">
+    <param name="flite" value="executable" />
+    <param name="jtalk" value="executable" />
+  </feature>
 </widget>
