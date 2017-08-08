@@ -5,8 +5,12 @@
   <content src="navi" type="application/x-executable"/>
   <description>NAVIGATION App</description>
   <author>AISIN AW</author>
-  <feature name="urn:AGL:required-permission">
+  <feature name="urn:AGL:widget:required-permission">
     <param name="http://tizen.org/privilege/internal/dbus" value="required" />
   </feature>
   <license>GPL</license>
+  <feature name="urn:AGL:widget:file-properties">
+    <param name="flite" value="executable" />
+    <param name="jtalk" value="executable" />
+  </feature>
 </widget>
