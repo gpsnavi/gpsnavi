@@ -41,6 +41,8 @@ void glvSetDebugFlag(int flag){
 	glv_debug_flag = flag;
 }
 
+int canUpdate(void);
+
 int glvCheckTimer(GLVContext glv_c,int id,int count);
 /* ---------------------------------------------------------- */
 GLVDisplay glvOpenDisplay(char *dpyName)
@@ -157,7 +159,11 @@ void glvSwapBuffers(GLVContext glv_c)
 
 	glv_context = (GLVCONTEXT_t*)glv_c;
 
-	eglSwapBuffers(glv_context->glv_win->glv_dpy->egl_dpy, glv_context->egl_surf);
+
+	//if (canUpdate() == 1)
+	{
+		eglSwapBuffers(glv_context->glv_win->glv_dpy->egl_dpy, glv_context->egl_surf);
+	}
 }
 
 void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
@@ -209,7 +215,10 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 					fprintf(stderr,"glv_context->eventFunc.redraw error\n");
 				}
 			}
-			eglSwapBuffers(glv_context->glv_win->glv_dpy->egl_dpy, glv_context->egl_surf);
+			//if (canUpdate() == 1)
+			{
+				eglSwapBuffers(glv_context->glv_win->glv_dpy->egl_dpy, glv_context->egl_surf);
+			}
 			break;
 		case GLV_ON_UPDATE:
 			GLV_DEBUG printf("GLV_ON_UPDATE   count = %d\n",drawCount);

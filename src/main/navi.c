@@ -505,6 +505,10 @@ static void usage(void)
 	printf("  --help                      this help message\n");
 }
 
+extern void setPort(long port);
+extern void setToken(char *tkn);
+
+
 int main_arg(int argc, char *argv[])
 {
 	int width,height;
@@ -512,6 +516,9 @@ int main_arg(int argc, char *argv[])
 	char *home;
 	int ret = -1;
 	
+	setPort(strtol(argv[1], NULL, 10));
+	setToken(argv[2]);
+
 	ret = search_map_data();
 	if (ret != 0)
 	{
@@ -526,7 +533,7 @@ int main_arg(int argc, char *argv[])
 		}
 	}
 
-	for(i = 1; i < argc; i++) {
+	for(i = 3; i < argc; i++) {
 		if(strcmp(argv[i], "-display") == 0) {
 			dpyName = argv[i+1];
 			i++;
@@ -606,12 +613,20 @@ int main(int argc, char *argv[])
 	GLVWindow	glv_hmi_window;
 	int rc;
 
+
+	fprintf(stderr,"start gps navi\n");	
+
+	if (argc < 2)
+	{
+		fprintf(stderr,"Error:few args\n");	
+	}
+
 	rc = main_arg(argc,argv);
 	if(0 != rc){
 		return(-1);
 	}
 
-	printf("%s\n",APP_NAME_TEXT);
+	fprintf(stderr,"%s\n",APP_NAME_TEXT);
 
 	naviStartUpResolution(resolution);
 	naviStartUpRegion(region);
@@ -689,7 +704,7 @@ int main(int argc, char *argv[])
 
 	glvOnReDraw(glv_map_context);
 
-	CreateAPIServer();
+	//CreateAPIServer();
 
 	glvEventLoop(glv_dpy);
 

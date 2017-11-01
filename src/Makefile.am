@@ -569,7 +569,7 @@ sms/sms-core/SMCoreMP/MP_Def.h \
 sms/sms-core/SMCoreMP/MP_GL.h \
 sms/sms-core/SMUtil/pthread_msq.h \
 glview/glview.c \
-glview/glview_wayland.c \
+glview/glview_wayland.cpp \
 glview/ivi-application-protocol.c \
 yspng/yspng.cpp \
 pthread/pthread_timer.c \
@@ -612,7 +612,7 @@ navi_CPPFLAGS = \
         -I$(top_srcdir)/src/api
 
 
-navi_CFLAGS = \
+navi_CFLAGS = -fno-permissive \
         @GLIB_CFLAGS@ \
         @FREETYPE2_CFLAGS@ \
         @WAYLAND_CFLAGS@ \
@@ -621,9 +621,11 @@ navi_CFLAGS = \
         @SQLITE3_CFLAGS@ \
         @EXPAT_CFLAGS@ \
         @OPENSSL_CFLAGS@ \
-        @DBUSCXX_CFLAGS@
+        @DBUSCXX_CFLAGS@ \
+	@WINDOWMANAGER_CFLAGS@ \
+	@HOMESCREEN_CFLAGS@ 
 
-navi_CXXFLAGS = -std=c++11 \
+navi_CXXFLAGS = -std=c++11 -fno-permissive \
         @GLIB_CFLAGS@ \
         @FREETYPE2_CFLAGS@ \
         @WAYLAND_CFLAGS@ \
@@ -632,7 +634,9 @@ navi_CXXFLAGS = -std=c++11 \
         @SQLITE3_CFLAGS@ \
         @EXPAT_CFLAGS@ \
         @OPENSSL_CFLAGS@ \
-        @DBUSCXX_CFLAGS@
+        @DBUSCXX_CFLAGS@ \
+	@WINDOWMANAGER_CFLAGS@ \
+	@HOMESCREEN_CFLAGS@ 
 
 navi_LDADD = \
 	-lrt \
@@ -645,7 +649,9 @@ navi_LDADD = \
         @SQLITE3_LIBS@ \
         @EXPAT_LIBS@ \
         @OPENSSL_LIBS@ \
-        @DBUSCXX_LIBS@
+        @DBUSCXX_LIBS@ \
+	@WINDOWMANAGER_LIBS@ \
+	@HOMESCREEN_LIBS@ 
 
 #
 
