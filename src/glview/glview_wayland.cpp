@@ -102,7 +102,6 @@ void setToken(char *tkn)
 }
 int init_wm(LibWindowmanager *wm)
 {
-	//char* surfaceIdStr;
 	int result = -1;
 
 	if (g_wm->init(g_port, g_token.c_str()) != 0) {
@@ -113,8 +112,8 @@ int init_wm(LibWindowmanager *wm)
 	json_object_object_add(obj, g_wm->kKeyDrawingName, json_object_new_string(g_app_name));
 	
 	result = g_wm->requestSurface(obj);
-	if (result <  0) {
-		fprintf(stderr,"wm request surface failed ");
+	if (result < 0) {
+		fprintf(stderr,"wm request surface failed \n");
 		return -1;
 	}
 
@@ -123,25 +122,25 @@ int init_wm(LibWindowmanager *wm)
 	g_wm->set_event_handler(LibWindowmanager::Event_Active, [wm](json_object *object) {
 		const char *label = json_object_get_string(
 			json_object_object_get(object, g_wm->kKeyDrawingName));
-		fprintf(stderr,"Surface %s got activated! ", label);
+		fprintf(stderr,"Surface %s got activated! \n", label);
 	});
 
 	g_wm->set_event_handler(LibWindowmanager::Event_Inactive, [wm](json_object *object) {
 		const char *label = json_object_get_string(
 			json_object_object_get(object, g_wm->kKeyDrawingName));
-		fprintf(stderr,"Surface %s got inactivated!", label);
+		fprintf(stderr,"Surface %s got inactivated! \n", label);
 	});
 
 	g_wm->set_event_handler(LibWindowmanager::Event_Visible, [wm](json_object *object) {
 		const char *label = json_object_get_string(
 			json_object_object_get(object, g_wm->kKeyDrawingName));
-		fprintf(stderr,"Surface %s got visibled!", label);
+		fprintf(stderr,"Surface %s got visibled! \n", label);
 	});
 
 	g_wm->set_event_handler(LibWindowmanager::Event_Invisible, [wm](json_object *object) {
 		const char *label = json_object_get_string(
 			json_object_object_get(object, g_wm->kKeyDrawingName));
-		fprintf(stderr,"Surface %s got invisibled!", label);
+		fprintf(stderr,"Surface %s got invisibled! \n", label);
 		gIsDraw = false;
 	});
 
@@ -151,16 +150,16 @@ int init_wm(LibWindowmanager *wm)
 		const char *area = json_object_get_string(
 			json_object_object_get(object, g_wm->kKeyDrawingArea));
 
-		fprintf(stderr,"Surface %s got syncDraw! Area: %s. ", label, area);
+		fprintf(stderr,"Surface %s got syncDraw! Area: %s. \n", label, area);
 		if ((g_wm->kStrLayoutNormal + "." + g_wm->kStrAreaFull) == std::string(area)) {
-			fprintf(stderr,"Layout:%s x:%d y:%d w:%d h:%d ", area, 0, 0, 1080, 1488);
+			fprintf(stderr,"Layout:%s x:%d y:%d w:%d h:%d \n", area, 0, 0, 1080, 1488);
 			//wl_egl_window_resize(gWindow->native, 1080, 1488, 0, 0);
 			//gWindow->geometry.width = 1080;
 			//gWindow->geometry.height = 1488;
 		}
 		else if ((g_wm->kStrLayoutSplit + "." + g_wm->kStrAreaMain)	== std::string(area) ||
 				 (g_wm->kStrLayoutSplit + "." + g_wm->kStrAreaSub) == std::string(area)) {
-			fprintf(stderr,"Layout:%s x:%d y:%d w:%d h:%d ", area, 0, 0, 1080, 744);
+			fprintf(stderr,"Layout:%s x:%d y:%d w:%d h:%d \n", area, 0, 0, 1080, 744);
 			//wl_egl_window_resize(gWindow->native, 1080, 744, 0, 0);
 			//gWindow->geometry.width = 1080;
 			//gWindow->geometry.height = 744;
@@ -178,7 +177,7 @@ int init_wm(LibWindowmanager *wm)
 	g_wm->set_event_handler(LibWindowmanager::Event_FlushDraw, [wm](json_object *object) {
 		const char *label = json_object_get_string(
 			json_object_object_get(object, g_wm->kKeyDrawingName));
-		fprintf(stderr,"Surface %s got flushdraw! ", label);
+		fprintf(stderr,"Surface %s got flushdraw! \n", label);
 	});
 
 /*
@@ -189,7 +188,7 @@ int init_wm(LibWindowmanager *wm)
 
 	g_id_ivisurf = atoi(surfaceIdStr);
 */
-	fprintf(stderr,"IVI_SURFACE_ID: %d ", g_id_ivisurf);
+	fprintf(stderr,"IVI_SURFACE_ID: %d \n", g_id_ivisurf);
 
 	return 0;
 }
@@ -198,17 +197,17 @@ int
 init_hs(LibHomeScreen* hs){
 	if(g_hs->init(g_port, g_token)!=0)
 	{
-		fprintf(stderr,"homescreen init failed. ");
+		fprintf(stderr,"homescreen init failed. \n");
 		return -1;
 	}
 
 	g_hs->set_event_handler(LibHomeScreen::Event_TapShortcut, [](json_object *object){
 		const char *application_name = json_object_get_string(
 			json_object_object_get(object, "application_name"));
-		fprintf(stderr,"Event_TapShortcut application_name = %s ", application_name);
+		fprintf(stderr,"Event_TapShortcut application_name = %s \n", application_name);
 		if(strcmp(application_name, g_app_name) == 0)
 		{
-			fprintf(stderr,"try to activesurface %s ", g_app_name);
+			fprintf(stderr,"try to activesurface %s \n", g_app_name);
 			json_object *obj = json_object_new_object();
 			json_object_object_add(obj, g_wm->kKeyDrawingName, json_object_new_string(g_app_name));
 			json_object_object_add(obj, g_wm->kKeyDrawingArea, json_object_new_string("normal.full"));
@@ -220,7 +219,7 @@ init_hs(LibHomeScreen* hs){
 	g_hs->set_event_handler(LibHomeScreen::Event_OnScreenMessage, [](json_object *object){
 		const char *display_message = json_object_get_string(
 			json_object_object_get(object, "display_message"));
-        fprintf(stderr,"Event_OnScreenMessage display_message = %s ", display_message);
+        fprintf(stderr,"Event_OnScreenMessage display_message = %s \n", display_message);
 	});
 
 	return 0;
