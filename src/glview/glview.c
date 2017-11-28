@@ -30,6 +30,7 @@
 #define GLV_ON_UPDATE	(3)
 #define GLV_ON_TIMER	(4)
 #define GLV_ON_GESTURE	(5)
+#define GLV_ON_ACTIVATE	(6)
 
 GLVContext _glv_parent_context=0;
 
@@ -256,6 +257,10 @@ void *glvSurfaceViewMsgHandler(GLVCONTEXT_t *glv_context)
 					fprintf(stderr,"glv_context->eventFunc.gesture error\n");
 				}
 			}
+			break;
+		case GLV_ON_ACTIVATE:
+			GLV_DEBUG printf("GLV_ON_ACTIVATE\n");
+			glvActivateSurface();
 			break;
 		default:
 			break;
@@ -485,6 +490,21 @@ int glvOnGesture(GLVContext glv_c,int eventType,int x,int y,int distance_x,int d
 	return (GLV_OK);
 }
 
+int glvOnActivate(GLVContext glv_c)
+{
+	GLVCONTEXT_t *glv_context;
+	pthread_msq_msg_t smsg;
+
+	glv_context = (GLVCONTEXT_t*)glv_c;
+
+	smsg.data[0] = GLV_ON_ACTIVATE;
+	smsg.data[1] = glv_context->maps;
+	smsg.data[2] = 0;
+	smsg.data[3] = 0;
+	//GLV_DEBUG printf("GLV_ON_ACTIVE \n");
+	pthread_msq_msg_send(&glv_context->queue,&smsg,0);
+	return (GLV_OK);
+}
 
 int glvCheckTimer(GLVContext glv_c,int id,int count)
 {

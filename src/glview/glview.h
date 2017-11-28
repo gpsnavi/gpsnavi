@@ -109,6 +109,7 @@ int glvOnReShape(GLVContext glv_ctx,int width, int height);
 int glvOnReDraw(GLVContext glv_ctx);
 int glvOnUpdate(GLVContext glv_c);
 int glvOnGesture(GLVContext glv_c,int eventType,int x,int y,int distance_x,int distance_y,int velocity_x,int velocity_y);
+int glvOnActivate(GLVContext glv_c);
 
 int glvCheckTimer(GLVContext glv_c,int id,int count);
 void glvInitTimer(void);
@@ -117,6 +118,7 @@ int glvStartTimer(GLVContext glv_c,int id);
 int glvStopTimer(GLVContext glv_c,int id);
 
 void glvEventLoop(GLVDisplay glv_dpy);
+void glvActivateSurface();
 
 #ifdef __cplusplus
 }

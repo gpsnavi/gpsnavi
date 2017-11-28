@@ -703,6 +703,7 @@ int main(int argc, char *argv[])
 	sample_createGuideThread();
 
 	glvOnReDraw(glv_map_context);
+	glvOnActivate(glv_map_context);
 
 	//CreateAPIServer();
 
