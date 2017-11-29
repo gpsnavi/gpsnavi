@@ -902,10 +902,12 @@ void glvEventLoop(GLVDisplay glv_dpy)
 
 void glvActivateSurface()
 {
+#ifdef IVISHELL
 	json_object *obj = json_object_new_object();
 	json_object_object_add(obj, g_wm->kKeyDrawingName, json_object_new_string(g_app_name));
 	json_object_object_add(obj, g_wm->kKeyDrawingArea, json_object_new_string("normal.full"));
 	g_wm->activateSurface(obj);
+#endif
 }
 
 // ----------------------------------------------------------------------------
