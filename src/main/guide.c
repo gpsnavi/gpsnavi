@@ -116,13 +116,16 @@ static void *guideThread(void *no_arg)
 				NC_Guide_GetRealTimeInfo(&guide_info);	//	リアルタイムの案内情報を取得する
 
 				{
-					
+					int *p;
 					SMCARSTATE car;
 					memset(&car ,0 ,sizeof(SMCARSTATE));
 					
 					NC_DM_GetCarState(&car, e_SC_CARLOCATION_NOW);
 					
-					memcpy(g_GeocordSHM,&car,sizeof(SMCARSTATE));
+					p = g_GeocordSHM;
+					p[0] = 123456;
+					
+					memcpy(&p[1],&car,sizeof(SMCARSTATE));
 				}
 
 				if((guide_info.turnDir > 0)&&(guide_info.turnDir < 22)){
