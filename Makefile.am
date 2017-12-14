@@ -35,11 +35,11 @@ endif
 package:src/navi
 	rm -rf package/
 	mkdir -p package/root
-	mkdir -p package/root$(base_libdir)
+	mkdir -p package/root/lib
 	cp src/.libs/navi package/root/
 	cp flite package/root/
 	cp jtalk package/root/
-	cp src/.libs/libnavicore.so.0 package/root$(base_libdir)/
+	cp src/.libs/libnavicore.so.0 package/root/lib/
 	cp $(srcdir)/agl/config.xml package/root/
 	cp $(srcdir)/agl/HMI_AppLauncher_Navigation_Active-01.png package/root/navigation.png
 	wgtpkg-pack -f -o package/navigation.wgt package/root
