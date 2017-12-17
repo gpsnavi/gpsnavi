@@ -32,7 +32,7 @@ jtalk: jtalk.in
 	chmod +x jtalk
 endif
 
-package:src/navi
+package:src/navi jtalk flite
 	rm -rf package/
 	mkdir -p package/root
 	mkdir -p package/root/lib
