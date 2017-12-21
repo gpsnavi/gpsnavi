@@ -13,5 +13,9 @@
     <param name="homescreen" value="ws" />
     <param name="windowmanager" value="ws" />
   </feature>
+  <feature name="urn:AGL:widget:file-properties">
+    <param name="flite" value="executable" />
+    <param name="jtalk" value="executable" />
+  </feature>
   <license>GPL</license>
 </widget>
