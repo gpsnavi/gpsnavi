@@ -705,7 +705,7 @@ int main(int argc, char *argv[])
 	glvOnReDraw(glv_map_context);
 	glvOnActivate(glv_map_context);
 
-	//CreateAPIServer();
+	CreateAPIServer();
 
 	glvEventLoop(glv_dpy);
 
