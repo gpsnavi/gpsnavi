@@ -1,0 +1,6 @@
+#!/bin/sh
+TMP=/tmp/navi.wav
+echo "$1" | open_jtalk -ow $TMP -m @exec_prefix@/share/Voice/mei/mei_normal.htsvoice -x @exec_prefix@/share/dic/
+paplay --property='media.role=Navi' $TMP
+rm -f $TMP
+

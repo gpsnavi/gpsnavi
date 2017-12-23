@@ -569,19 +569,24 @@ sms/sms-core/SMCoreMP/MP_Def.h \
 sms/sms-core/SMCoreMP/MP_GL.h \
 sms/sms-core/SMUtil/pthread_msq.h \
 glview/glview.c \
-glview/glview_wayland.c \
+glview/glview_wayland.cpp \
+glview/ivi-application-protocol.c \
 yspng/yspng.cpp \
 pthread/pthread_timer.c \
 main/navi.c \
-main/guide.c \
 main/route.c \
-main/png.cpp \
+main/guide.c \
 main/button.c \
+main/png.cpp \
 main/HMI_Icon.c \
 main/font.cpp \
 main/image.c \
+api/server.cpp \
+api/genivi-navicore.cpp \
+api/genivi-mapviewer.cpp \
 glview/glview_local.h \
 glview/glview.h \
+glview/ivi-application-client-protocol.h \
 yspng/yspng.h \
 pthread/pthread_timer.h \
 main/png.h \
@@ -593,6 +598,7 @@ LICENSE \
 COPYING
 
 navi_CPPFLAGS = \
+        -D_BSD_SOURCE \
         -I$(top_srcdir)/src/sms \
         -I$(top_srcdir)/src/sms/lib/include \
         -I$(top_srcdir)/src/sms/locator/include \
@@ -601,9 +607,12 @@ navi_CPPFLAGS = \
         -I$(top_srcdir)/src/sms/sms-core/SMUtil \
         -I$(top_srcdir)/src/glview \
         -I$(top_srcdir)/src/yspng \
-        -I$(top_srcdir)/src/pthread
+        -I$(top_srcdir)/src/pthread \
+        -I$(top_srcdir)/src/main \
+        -I$(top_srcdir)/src/api
 
-navi_CFLAGS = \
+
+navi_CFLAGS = -fno-permissive \
         @GLIB_CFLAGS@ \
         @FREETYPE2_CFLAGS@ \
         @WAYLAND_CFLAGS@ \
@@ -611,9 +620,12 @@ navi_CFLAGS = \
         @ZLIB_CFLAGS@ \
         @SQLITE3_CFLAGS@ \
         @EXPAT_CFLAGS@ \
-        @OPENSSL_CFLAGS@
+        @OPENSSL_CFLAGS@ \
+        @DBUSCXX_CFLAGS@ \
+	@WINDOWMANAGER_CFLAGS@ \
+	@HOMESCREEN_CFLAGS@ 
 
-navi_CXXFLAGS = \
+navi_CXXFLAGS = -std=c++11 -fno-permissive \
         @GLIB_CFLAGS@ \
         @FREETYPE2_CFLAGS@ \
         @WAYLAND_CFLAGS@ \
@@ -621,9 +633,13 @@ navi_CXXFLAGS = \
         @ZLIB_CFLAGS@ \
         @SQLITE3_CFLAGS@ \
         @EXPAT_CFLAGS@ \
-        @OPENSSL_CFLAGS@
+        @OPENSSL_CFLAGS@ \
+        @DBUSCXX_CFLAGS@ \
+	@WINDOWMANAGER_CFLAGS@ \
+	@HOMESCREEN_CFLAGS@ 
 
 navi_LDADD = \
+	-lrt \
 	libnavicore.la \
         @GLIB_LIBS@ \
         @FREETYPE2_LIBS@ \
@@ -632,7 +648,10 @@ navi_LDADD = \
         @ZLIB_LIBS@ \
         @SQLITE3_LIBS@ \
         @EXPAT_LIBS@ \
-        @OPENSSL_LIBS@
+        @OPENSSL_LIBS@ \
+        @DBUSCXX_LIBS@ \
+	@WINDOWMANAGER_LIBS@ \
+	@HOMESCREEN_LIBS@ 
 
 #
 

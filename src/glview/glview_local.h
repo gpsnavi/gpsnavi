@@ -27,6 +27,7 @@ typedef struct _wldisplay {
    struct wl_compositor		*compositor;
    struct wl_subcompositor	*subcompositor;
    struct wl_shell			*shell;
+   struct ivi_application	*ivi_application;
 } WLDISPLAY_t;
 
 typedef struct _wlwindow {
@@ -34,6 +35,7 @@ typedef struct _wlwindow {
 	struct wl_surface		*surface;
 	struct wl_subsurface	*subsurface;
 	struct wl_shell_surface	*shell_surface;
+	struct ivi_surface		*ivi_surface;
 	struct wl_callback		*callback;
 	int x, y;
 	int width, height;

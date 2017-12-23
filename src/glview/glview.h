@@ -3,6 +3,7 @@
  *
  *
  * Copyright (c) 2016  Hitachi, Ltd.
+ * Copyright (c) 2016  Aisin AW, Ltd.
  *
  * This program is dual licensed under GPL version 2 or a commercial license.
  * See the LICENSE file distributed with this source file.
@@ -32,6 +33,10 @@
 #include <EGL/egl.h>
 #include "pthread_msq.h"
 #include "pthread_timer.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define GLV_OPENGL_ES1_API	(1)
 #define GLV_OPENGL_ES2_API	(2)
@@ -104,6 +109,7 @@ int glvOnReShape(GLVContext glv_ctx,int width, int height);
 int glvOnReDraw(GLVContext glv_ctx);
 int glvOnUpdate(GLVContext glv_c);
 int glvOnGesture(GLVContext glv_c,int eventType,int x,int y,int distance_x,int distance_y,int velocity_x,int velocity_y);
+int glvOnActivate(GLVContext glv_c);
 
 int glvCheckTimer(GLVContext glv_c,int id,int count);
 void glvInitTimer(void);
@@ -112,6 +118,10 @@ int glvStartTimer(GLVContext glv_c,int id);
 int glvStopTimer(GLVContext glv_c,int id);
 
 void glvEventLoop(GLVDisplay glv_dpy);
+void glvActivateSurface();
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* GLVIEW_H */
 

@@ -3,6 +3,7 @@
  *
  *
  * Copyright (c) 2016  Hitachi, Ltd.
+ * Copyright (c) 2016  Aisin AW, Ltd. 
  *
  * This program is dual licensed under GPL version 2 or a commercial license.
  * See the LICENSE file distributed with this source file.
@@ -13,6 +14,8 @@
  *
  *  Created on: 2015/11/05
  *      Author:t.aikawa
+ *  Modified on: 2016/09/26
+ *      Author:clement.dransart@awtce.be
  */
 
 /*
@@ -24,6 +27,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "navicore.h"
 #include "glview.h"
@@ -31,6 +39,8 @@
 #include "font.h"
 #include "navi.h"
 #include "HMI_Icon.h"
+
+#include "server.h"
 
 #define APP_NAME_TEXT		"navi - sample GPS Navigation Version 0.0.7 (build 031 " __DATE__ ")"
 
@@ -54,6 +64,9 @@ int sample_hmi_load_image_file=0;
 #define NAVI_CONFIG_PATH_UK			NAVI_HOME_PATH NAVI_DATA_PATH "uk_TR6/"
 #define NAVI_CONFIG_PATH_GERMANY	NAVI_HOME_PATH NAVI_DATA_PATH "germany_TR6/"
 #define NAVI_CONFIG_PATH_NEVADA		NAVI_HOME_PATH NAVI_DATA_PATH "nevada_TR6/"
+
+#define NAVI_AGL_DEFAULT_PATH_JAPAN	"/var/mapdata/navi_data/japan_TR9"
+#define NAVI_AGL_DEFAULT_PATH_UK	"/var/mapdata/navi_data_UK/UnitedKingdom_TR9"
 
 #define NAVI_REGION_OPTIONAL	(-1)
 #define NAVI_REGION_JAPAN		(0)
@@ -86,6 +99,66 @@ static int resolution = NAVI_RESOLUTION_AGL_DEMO;
 
 static int region     = NAVI_REGION_JAPAN;
 //static int region     = NAVI_REGION_UK;
+
+
+#define SHM_FILE_MODE (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH)
+
+void *g_GeocordSHM = NULL;
+static int g_voicelanguage = 0;
+
+int search_map_data(void)
+{
+	int ret = -1;
+	struct stat sb;
+	
+	ret = stat(NAVI_AGL_DEFAULT_PATH_UK, &sb);
+	if (ret == 0)
+	{
+		strcpy(navi_config_path, NAVI_AGL_DEFAULT_PATH_UK);
+		if ((navi_config_path[strlen(navi_config_path) - 1] != '/') &&
+				(sizeof(navi_config_path) > (strlen(navi_config_path) + 1))) {
+			strcat(navi_config_path, "/");
+		}
+		region = NAVI_REGION_OPTIONAL;
+		g_voicelanguage = 2;
+		
+		return 0;
+	}
+	
+	ret = stat(NAVI_AGL_DEFAULT_PATH_JAPAN, &sb);
+	if (ret == 0)
+	{
+		strcpy(navi_config_path, NAVI_AGL_DEFAULT_PATH_JAPAN);
+		if ((navi_config_path[strlen(navi_config_path) - 1] != '/') &&
+				(sizeof(navi_config_path) > (strlen(navi_config_path) + 1))) {
+			strcat(navi_config_path, "/");
+		}
+		region = NAVI_REGION_OPTIONAL;
+		g_voicelanguage = 1;
+		
+		return 0;
+	}
+	
+	return -1;
+}
+
+int Create_GeocordSHM(void)
+{
+	int fd = 0;
+	struct stat sstat;
+
+	memset(&sstat,0,sizeof(sstat));
+		
+	fd = shm_open("/shm_navigation_geocord", (O_RDWR|O_CREAT), SHM_FILE_MODE);
+	ftruncate(fd, 4096);
+	fstat(fd, &sstat);
+	
+	g_GeocordSHM = mmap(NULL,sstat.st_size,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+	
+	close(fd);
+	
+	return 0;
+}
 
 void naviGetResolution(int *w,int *h)
 {
@@ -122,12 +195,12 @@ void naviStartUpRegion(int region)
 	strcat(navi_config_map_udi_info_file	,navi_config_path); strcat(navi_config_map_udi_info_file	,"Data/MD/UDI/udi_info");
 	strcat(navi_config_map_font_file		,navi_config_path); strcat(navi_config_map_font_file		,"IPAfont00303/ipagp.ttf");
 
-	printf("navi_config_path             (%s)\n",navi_config_path);
-	printf("navi_config_map_db_path      (%s)\n",navi_config_map_db_path);
-	printf("navi_config_user_data_path   (%s)\n",navi_config_user_data_path);
-	printf("navi_config_map_udi_data_path(%s)\n",navi_config_map_udi_data_path);
-	printf("navi_config_map_udi_info_file(%s)\n",navi_config_map_udi_info_file);
-	printf("navi_config_map_font_file    (%s)\n",navi_config_map_font_file);
+	fprintf(stdout,"navi_config_path             (%s)\n",navi_config_path);
+	fprintf(stdout,"navi_config_map_db_path      (%s)\n",navi_config_map_db_path);
+	fprintf(stdout,"navi_config_user_data_path   (%s)\n",navi_config_user_data_path);
+	fprintf(stdout,"navi_config_map_udi_data_path(%s)\n",navi_config_map_udi_data_path);
+	fprintf(stdout,"navi_config_map_udi_info_file(%s)\n",navi_config_map_udi_info_file);
+	fprintf(stdout,"navi_config_map_font_file    (%s)\n",navi_config_map_font_file);
 	/* ---------------------------------------------------------------------------------- */
 }
 
@@ -145,12 +218,12 @@ void naviStartUpResolution(int resolution)
 		break;
 	case NAVI_RESOLUTION_AGL_DEMO:		// CES 2016 demo
 		WinWidth	= 1080;
-		WinHeight	= 1670;
+		WinHeight	= (1920 - 218 - 215);
 		break;
 	default:
 		break;
 	}
-	printf("window size %dx%d\n",WinWidth,WinHeight);
+	//printf("window size %dx%d\n",WinWidth,WinHeight);
 	/* ---------------------------------------------------------------------------------- */
 }
 
@@ -257,7 +330,7 @@ int hmi_init(GLVContext glv_ctx,int maps)
     hmiMP_GL_Init();
 
     if(sample_hmi_load_image_file == 1){
-    	printf("load image file(%s).\n",navi_config_hmi_udi_data_path);
+    	//printf("load image file(%s).\n",navi_config_hmi_udi_data_path);
     	//	HMIで使用するイメージはイメージファイルを読み込んで使用する
     	hmiMP_ICON_Load(navi_config_hmi_udi_data_path, navi_config_hmi_udi_info_file);
     }else{
@@ -358,20 +431,20 @@ int map_gesture(GLVContext glv_ctx,int maps,int eventType,int x,int y,int distan
 	switch(eventType)
 	 {
 	   case    GLV_GESTURE_EVENT_DOWN:
-		   printf("GESTURE:[down(%d,%d)]\n",x,y);
+		   //printf("GESTURE:[down(%d,%d)]\n",x,y);
 		   glvStartTimer(glv_ctx,GESTURE_LONG_PRESS_TIMER_ID);
 		   map_long_press_x = x;
 		   map_long_press_y = y;
 		   break;
 	   case    GLV_GESTURE_EVENT_SINGLE_UP:
-		   printf("GESTURE:[single up(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
+		   //printf("GESTURE:[single up(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
 		   break;
 	   case    GLV_GESTURE_EVENT_SCROLL:
-		   printf("GESTURE:[scroll(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
+		   //printf("GESTURE:[scroll(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
 		   run_scroll(glv_ctx,distanceX,distanceY);
 		   break;
 	   case    GLV_GESTURE_EVENT_FLING:
-		   printf("GESTURE:[flick(%d,%d) vector:%d %d velocity:%d %d]\n",x,y,distanceX,distanceY,velocityX,velocityY);
+		   //printf("GESTURE:[flick(%d,%d) vector:%d %d velocity:%d %d]\n",x,y,distanceX,distanceY,velocityX,velocityY);
 		   {
 				mMoveDistance = 0;
 				mBaseDistance = hypot((double)velocityX, (double)velocityY) * GOLE_RATIO;
@@ -390,7 +463,7 @@ int map_gesture(GLVContext glv_ctx,int maps,int eventType,int x,int y,int distan
 		   glvStartTimer(glv_ctx,GESTURE_FLICK_TIMER_ID);
 		   break;
 	   case    GLV_GESTURE_EVENT_SCROLL_STOP:
-		   printf("GESTURE:[scroll end(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
+		   //printf("GESTURE:[scroll end(%d,%d) vector:%d %d]\n",x,y,distanceX,distanceY);
 		   run_scroll(glv_ctx,distanceX,distanceY);
 		   break;
 	   default:
@@ -409,9 +482,9 @@ int map_timer(GLVContext glv_ctx,int maps,int group,int id)
 			/* シミュレーション中 */
 			return(GLV_OK);
 		}
-		printf("TIMER:long press\n");
+		//printf("TIMER:long press\n");
 		NC_MP_ScreenToGeoCode(NC_MP_MAP_MAIN,map_long_press_x, map_long_press_y, &geoCood);
-		printf("TIMER:latitude(%ld) , longitude(%ld)\n",geoCood.latitude,geoCood.longitude);
+		//printf("TIMER:latitude(%ld) , longitude(%ld)\n",geoCood.latitude,geoCood.longitude);
 		sample_set_demo_icon_pin_flag(&geoCood);
 		NC_MP_RefreshMap(NC_MP_MAP_MAIN);
 		glvSwapBuffers(glv_ctx);
@@ -432,23 +505,35 @@ static void usage(void)
 	printf("  --help                      this help message\n");
 }
 
+extern void setPort(long port);
+extern void setToken(char *tkn);
+
+
 int main_arg(int argc, char *argv[])
 {
 	int width,height;
 	int i,n;
-#if 1
 	char *home;
-	home = getenv("NAVI_DATA_DIR");
-	if(home != 0){
-		strcpy(navi_config_path,home);
-		if ((navi_config_path[strlen(navi_config_path) - 1] != '/') &&
-				(sizeof(navi_config_path) > (strlen(navi_config_path) + 1))) {
-			strcat(navi_config_path, "/");
+	int ret = -1;
+	
+	setPort(strtol(argv[1], NULL, 10));
+	setToken(argv[2]);
+
+	ret = search_map_data();
+	if (ret != 0)
+	{
+		home = getenv("NAVI_DATA_DIR");
+		if(home != 0){
+			strcpy(navi_config_path,home);
+			if ((navi_config_path[strlen(navi_config_path) - 1] != '/') &&
+					(sizeof(navi_config_path) > (strlen(navi_config_path) + 1))) {
+				strcat(navi_config_path, "/");
+			}
+			region = NAVI_REGION_OPTIONAL;
 		}
-		region = NAVI_REGION_OPTIONAL;
 	}
-#endif
-	for(i = 1; i < argc; i++) {
+
+	for(i = 3; i < argc; i++) {
 		if(strcmp(argv[i], "-display") == 0) {
 			dpyName = argv[i+1];
 			i++;
@@ -528,12 +613,20 @@ int main(int argc, char *argv[])
 	GLVWindow	glv_hmi_window;
 	int rc;
 
+
+	fprintf(stderr,"start gps navi\n");	
+
+	if (argc < 2)
+	{
+		fprintf(stderr,"Error:few args\n");	
+	}
+
 	rc = main_arg(argc,argv);
 	if(0 != rc){
 		return(-1);
 	}
 
-	printf("%s\n",APP_NAME_TEXT);
+	fprintf(stderr,"%s\n",APP_NAME_TEXT);
 
 	naviStartUpResolution(resolution);
 	naviStartUpRegion(region);
@@ -557,6 +650,8 @@ int main(int argc, char *argv[])
 	NC_MP_SetImageReadForImageCB(SetImageForMemoryCallBack);
 	NC_MP_SetMapDrawEndCB(MapDrawEndCallBack);
 
+	Create_GeocordSHM();
+
 	rc = NC_Initialize(WinWidth,WinHeight,navi_config_user_data_path,navi_config_map_db_path,"locatorPath");
 	if(NC_SUCCESS != rc){
 		fprintf(stderr,"NC_Initialize error.\n");
@@ -564,6 +659,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr," map  db   path(%s)\n",navi_config_map_db_path);
 		return(-1);
 	}
+
+	if (g_voicelanguage == 1) SC_MNG_SetLanguage(1);
+	else if (g_voicelanguage == 2) SC_MNG_SetLanguage(2);
+	
 
 	NC_MP_SetMapMoveWithCar(NC_MP_MAP_MAIN,1);
 	NC_MP_SetMapScaleLevel(NC_MP_MAP_MAIN,main_window_mapScale);
@@ -604,6 +703,9 @@ int main(int argc, char *argv[])
 	sample_createGuideThread();
 
 	glvOnReDraw(glv_map_context);
+	glvOnActivate(glv_map_context);
+
+	CreateAPIServer();
 
 	glvEventLoop(glv_dpy);
 
@@ -628,7 +730,7 @@ int sample_hmi_keyboard_handle_key(
 	if(glv_map_context == 0){
 		return(0);
 	}
-    fprintf(stderr, "Key is %d state is %d\n", key, state);
+    //fprintf(stderr, "Key is %d state is %d\n", key, state);
     if(state == GLV_KEYBOARD_KEY_STATE_PRESSED){
     	switch(key){
     	case 103:		// '↑'
